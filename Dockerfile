@@ -1,16 +1,14 @@
 FROM ruby:3.2.2
-WORKDIR /app
-COPY Gemfile * ./
-RUN gem install bundler && bundle install
 
-ENV BUNDLE_PATH=/usr/local/bundle \
-    BUNDLE_APP_CONFIG=/usr/local/bundle/config \
-    RAILS_ENV=development
+RUN apt-get update && apt-get install -y sqlite3 libsqlite3-dev
 
 WORKDIR /app
 
 COPY Gemfile Gemfile.lock ./
-RUN bundle install
+
+RUN gem install bundler && bundle install
+
+RUN rm -f /app/config
 
 COPY . .
 
@@ -18,4 +16,3 @@ EXPOSE 8000
 
 CMD ["bundle", "exec", "rackup", "-o", "0.0.0.0", "-p", "8000"]
 
-RUN apt-get update && apt-get install -y sqlite3 libsqlite3-dev
