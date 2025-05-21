@@ -1,3 +1,4 @@
 class User < ActiveRecord::Base
-  has_many :accounts
+  has_one :account
+  validates :name, presence: true
 end
