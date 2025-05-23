@@ -1,0 +1,12 @@
+default: &default
+  adapter: sqlite3
+  pool: 5
+  timeout: 5000
+
+development:
+  adapter: sqlite3
+  database: db/wallet_development.sqlite3
+
+test:
+  adapter:sqlite3
+  database:dp/wallet_test.sqlite3
