@@ -4,9 +4,9 @@ default: &default
   timeout: 5000
 
 development:
-  adapter: sqlite3
+  <<: *default
   database: db/wallet_development.sqlite3
 
 test:
-  adapter:sqlite3
-  database:dp/wallet_test.sqlite3
+  <<: *default
+  database: dp/wallet_test.sqlite3
