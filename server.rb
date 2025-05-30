@@ -10,7 +10,9 @@ class App < Sinatra::Application
     end
   end
 
+  set :views, File.expand_path('../views', __FILE__)
+  
   get '/' do
-    'Welcome'
+    erb :welcome
   end
 end
