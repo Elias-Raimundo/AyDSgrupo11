@@ -1,4 +1,4 @@
-class Reserve < ActiveRecord::Base
+class Saving < ActiveRecord::Base
     belongs_to :account
   
     validates :account, presence: true
