@@ -15,6 +15,8 @@ ActiveRecord::Base.establish_connection(db_config['development'])
 Dir[File.join(__dir__, 'models', '*.rb')].each { |file| require_relative file }
 
 class App < Sinatra::Application
+  set :public_folder, 'public'
+
   configure :development do
     register Sinatra::Reloader
     after_reload do
