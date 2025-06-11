@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Vault - Login</title>
+  <title>Vault - Welcome</title>
   <style>
     body {
       margin: 0;
@@ -14,7 +14,7 @@
       height: 100vh;
     }
 
-    .login-container {
+    .welcome-container {
       background: transparent;
       text-align: center;
       width: 100%;
@@ -24,73 +24,37 @@
     }
 
     h1 {
-      margin: 10px 0 30px;
-      font-size: 24px;
+      margin: 10px 0 50px; /* Adjusted margin for better spacing */
+      font-size: 48px; /* Larger font size for emphasis */
       color: white;
     }
 
-    input[type="email"],
-    input[type="password"] {
+    .button-group a {
+      display: block; /* Make links block-level for full width */
       width: 100%;
       padding: 15px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 20px;
-      background-color: #d4e4f7;
-      color: #333;
-      font-size: 16px;
-    }
-
-    button {
-      width: 100%;
-      padding: 15px;
-      margin-top: 20px;
+      margin-bottom: 20px; /* Space between buttons */
       border: none;
       border-radius: 20px;
       background-color: #001d4a;
       color: white;
       font-size: 16px;
       font-weight: bold;
+      text-decoration: none; /* Remove underline */
       cursor: pointer;
       transition: background-color 0.3s;
     }
 
-    button:hover {
+    .button-group a:hover {
       background-color: #002c6c;
     }
-
-    .register {
-      margin-top: 20px;
-      font-size: 14px;
-      color: #333;
-    }
-
-    .register a {
-      display: inline-block;
-      margin-top: 10px;
-      background-color: #002c6c;
-      padding: 12px 24px;
-      border-radius: 20px;
-      color: white;
-      text-decoration:
-  }
-
-  .register a:hover {
-    background-color: #001d4a;
-  }
   </style>
 </head>
 <body>
-  <div class="login-container">
+  <div class="welcome-container">
     <h1>vault</h1>
-    <form action="/login" method="post">
-      <input type="email" name="email" placeholder="Usuario-email" required>
-      <input type="password" name="password" placeholder="Contraseña" required>
-      <a class="forgot" href="#">Olvidé mi contraseña</a>
-      <button type="submit">INGRESAR</button>
-    </form>
-    <div class="register">
-      <p>¿No tienes una cuenta ?</p>
+    <div class="button-group">
+      <a href="/login">INGRESAR</a>
       <a href="/signup">REGISTRARME</a>
     </div>
   </div>

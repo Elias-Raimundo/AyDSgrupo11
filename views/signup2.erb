@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Vault - Registro (Paso 1)</title>
+  <title>Vault - Registro (Paso 2)</title>
   <style>
     body {
       margin: 0;
@@ -29,7 +29,8 @@
       color: white;
     }
 
-    input[type="text"] {
+    input[type="email"],
+    input[type="password"] {
       width: 100%;
       padding: 15px;
       margin: 10px 0;
@@ -82,13 +83,15 @@
 <body>
   <div class="signup-container">
     <h1>vault</h1>
-    <form action="/signup2" method="post">
-      <input type="text" name="nombre" placeholder="Nombre" required>
-      <input type="text" name="apellido" placeholder="Apellido" required>
-      <input type="text" name="dni" placeholder="DNI" required>
-      <input type="text" name="telefono" placeholder="Teléfono" required>
-      <button type="submit">SIGUIENTE</button>
+    <form action="/signup" method="post">
+      <input type="email" name="email" placeholder="Usuario-email" required>
+      <input type="password" name="password" placeholder="Contraseña" required>
+      <button type="submit">REGISTRARME</button>
     </form>
+    <div class="login">
+      <p>¿Ya tienes una cuenta?</p>
+      <a href="/login">INGRESAR</a>
+    </div>
   </div>
 </body>
 </html>

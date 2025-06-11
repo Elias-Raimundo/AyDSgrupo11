@@ -26,10 +26,7 @@ class App < Sinatra::Application
    # Activa sesiones (para mantener al usuario logueado)
   enable :sessions
 
-  # Ruta raíz: redirige al login
-#  get '/' do
-#    redirect '/login'
-#  end
+
 
   # Ruta para mostrar el formulario de registro
   get '/signup' do
