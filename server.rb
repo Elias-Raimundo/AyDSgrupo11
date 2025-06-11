@@ -6,7 +6,7 @@ require 'active_record'
 require 'erb'
 require 'logger'
 require 'bigdecimal'
-#require_relative 'file'
+require 'bcrypt'
 
 
 db_config = YAML.load_file('config/database.yml', aliases: true)
@@ -29,26 +29,61 @@ class App < Sinatra::Application
   enable :sessions
 
 
-
-  # Ruta para mostrar el formulario de registro
+#-------- RUTAS DE REGISTRO EN DOS PASOS ---------
+  # Paso 1: Muestra el formulario inicial (datos personales)
   get '/signup' do
     erb :signup
   end  
 
   # Procesa el formulario de registro
-  post '/signup' do
-    user = User.new(
-      name: params[:name],
-      email: params[:email],
-      password: params[:password] # bcrypt lo convierte en password_digest
-    )
+  post '/signup2' do
+    session[:signup_data_step1] = {
+      nombre: params[:nombre],
+      apellido: params[:apellido],
+      dni: params[:dni],
+      telefono: params[:telefono]
+    }
 
+    redirect '/signup2'
+  end
+
+  # Paso 2: Muestra el formulario de registro (datos de usuario)
+  get '/signup2' do
+    unless session[:signup_data_step1]
+      # Si no hay datos del paso 1, redirigimos al inicio del registro
+      redirect '/signup'
+    end
+
+    erb :signup2
+  end
+
+  # Procesa el formulario de registro (datos de usuario) y crea el usuario
+  post '/final-signup' do
+    # Recupera los datos del paso 1
+    signup_data_step1 = session[:signup_data_step1]
+
+    # Si no hay datos del Paso 1 en la sesión, hay un problema o el usuario intentó saltarse pasos
+    unless step1_data
+      @error = 'Error: Datos del primer paso de registro no encontrados.'
+      return erb :signup1 # O una página de error
+    end
+
+    user_params = step1_data.merge(
+      email: params[:email],
+      password: params[:password],
+      name: "#{step1_data[:nombre]} #{step1_data[:apellido]}",
+      dni: step1_data[:dni],
+      telefono: step1_data[:telefono]
+    )
+    # Crea el usuario en la base de datos
+    user = User.new(user_params)
     if user.save
-      session[:user_id] = user.id
-      redirect '/welcome'
+      session[:user_id] = user.id # Guarda el ID del usuario en la sesión
+      session.delete(:signup_data_step1)
+      redirect '/welcome' # Redirige a la página de bienvenida
     else
       @error = user.errors.full_messages.join(', ')
-      erb :signup
+      erb :signup2 # Muestra el formulario de registro nuevamente con errores
     end
   end
 
