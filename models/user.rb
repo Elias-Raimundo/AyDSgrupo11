@@ -1,7 +1,8 @@
 class User < ActiveRecord::Base
   has_secure_password
 
-  belongs_to :person
+  belongs_to :person, class_name: 'Person', foreign_key: 'person_id'
+
   has_one :account
 
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }

@@ -58,46 +58,39 @@ class App < Sinatra::Application
 
   end
 
-  # Procesa el formulario de registro (datos de usuario) y crea el usuario
   post '/' do
     step1_data = session[:signup_data_step1]
-  unless step1_data
-    @error = 'Error: Datos del primer paso de registro no encontrados.'
-    return erb :signup
-  end
-
-  # Crear la persona primero
-  person = Person.new(
-    name: step1_data[:nombre],
-    surname: step1_data[:apellido],
-    dni: step1_data[:dni],
-    phone_number: step1_data[:telefono]
-  )
-
-  if person.save
-    # Hashear la contraseña con bcrypt
-    password_hash = BCrypt::Password.create(params[:password])
-    # Crear usuario asociado a esa persona
-    user = User.new(
-      email: params[:email],
-      password_digest: password_hash, 
-      person_id: person.id
-    )
-
-    if user.save
+  
+    unless step1_data
+      @error = 'Error: Datos del primer paso de registro no encontrados.'
+      return erb :signup
+    end
+  
+    ActiveRecord::Base.transaction do
+      # Crear la persona
+      person = Person.create!(
+        name: step1_data[:nombre],
+        surname: step1_data[:apellido],
+        dni: step1_data[:dni],
+        phone_number: step1_data[:telefono]
+      )
+  
+      # Crear el usuario
+      user = User.create!(
+        email: params[:email],
+        password: params[:password],
+        person: person
+      )
+  
       session[:user_id] = user.id
       session.delete(:signup_data_step1)
-      #redirect '/welcome'
-    else
-      @error = user.errors.full_messages.join(', ')
+      redirect '/welcome'
+    rescue ActiveRecord::RecordInvalid => e
+      @error = e.record.errors.full_messages.join(', ')
       erb :signup2
     end
-  else
-    @error = person.errors.full_messages.join(', ')
-    erb :signup
   end
-  redirect '/'
-end
+  
 
   # Muestra el formulario de login
   get '/login' do
