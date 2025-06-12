@@ -55,37 +55,49 @@ class App < Sinatra::Application
     end
 
     erb :signup2
+
   end
 
   # Procesa el formulario de registro (datos de usuario) y crea el usuario
-  post '/final-signup' do
-    # Recupera los datos del paso 1
-    signup_data_step1 = session[:signup_data_step1]
+  post '/' do
+    step1_data = session[:signup_data_step1]
+  unless step1_data
+    @error = 'Error: Datos del primer paso de registro no encontrados.'
+    return erb :signup
+  end
 
-    # Si no hay datos del Paso 1 en la sesión, hay un problema o el usuario intentó saltarse pasos
-    unless step1_data
-      @error = 'Error: Datos del primer paso de registro no encontrados.'
-      return erb :signup1 # O una página de error
-    end
+  # Crear la persona primero
+  person = Person.new(
+    name: step1_data[:nombre],
+    surname: step1_data[:apellido],
+    dni: step1_data[:dni],
+    phone_number: step1_data[:telefono]
+  )
 
-    user_params = step1_data.merge(
+  if person.save
+    # Hashear la contraseña con bcrypt
+    password_hash = BCrypt::Password.create(params[:password])
+    # Crear usuario asociado a esa persona
+    user = User.new(
       email: params[:email],
-      password: params[:password],
-      name: "#{step1_data[:nombre]} #{step1_data[:apellido]}",
-      dni: step1_data[:dni],
-      telefono: step1_data[:telefono]
+      password_digest: password_hash, 
+      person_id: person.id
     )
-    # Crea el usuario en la base de datos
-    user = User.new(user_params)
+
     if user.save
-      session[:user_id] = user.id # Guarda el ID del usuario en la sesión
+      session[:user_id] = user.id
       session.delete(:signup_data_step1)
-      redirect '/welcome' # Redirige a la página de bienvenida
+      #redirect '/welcome'
     else
       @error = user.errors.full_messages.join(', ')
-      erb :signup2 # Muestra el formulario de registro nuevamente con errores
+      erb :signup2
     end
+  else
+    @error = person.errors.full_messages.join(', ')
+    erb :signup
   end
+  redirect '/'
+end
 
   # Muestra el formulario de login
   get '/login' do

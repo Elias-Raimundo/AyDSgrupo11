@@ -1,4 +1,3 @@
-
 require "sinatra/activerecord/rake"
 
 namespace :db do
@@ -6,3 +5,4 @@ namespace :db do
     require "./server"
   end
 end
+
