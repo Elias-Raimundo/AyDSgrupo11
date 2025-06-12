@@ -41,6 +41,21 @@ namespace :db do
     ActiveRecord::MigrationContext.new(migrations_path).migrate
   end
 
+  desc 'Generar archivo schema.rb'
+  task :schema_dump, [:env] do |t, args|
+    env = args[:env] || 'development'
+    establish_connection(env)
+
+    File.open('db/schema.rb', 'w') do |file|
+      ActiveRecord::Base.connection_pool.with_connection do |conn|
+        ActiveRecord::SchemaDumper.dump(conn, file)
+      end
+    end
+
+    puts "Archivo db/schema.rb generado."
+  end
+
+
   desc 'Borrar base de datos (elimina archivo SQLite)'
   task :drop, [:env] do |t, args|
     env = args[:env] || 'development'

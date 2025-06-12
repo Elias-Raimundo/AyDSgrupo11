@@ -1,3 +1,5 @@
+require_relative 'config/environment'
+
 require 'bundler/setup'
 require 'sinatra/base'
 require 'sinatra/reloader' if Sinatra::Base.environment == :development
@@ -7,12 +9,6 @@ require 'erb'
 require 'logger'
 require 'bigdecimal'
 require 'bcrypt'
-
-
-db_config = YAML.load_file('config/database.yml', aliases: true)
-ActiveRecord::Base.establish_connection(db_config['development'])
-
-Dir[File.join(__dir__, 'models', '*.rb')].each { |file| require_relative file }
 
 class App < Sinatra::Application
   set :public_folder, 'public'
