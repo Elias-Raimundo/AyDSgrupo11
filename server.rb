@@ -23,7 +23,22 @@ class App < Sinatra::Application
   set :views, File.expand_path('../views', __FILE__)
    # Activa sesiones (para mantener al usuario logueado)
   enable :sessions
+  helpers do
+    def generate_unique_cvu
+        loop do
+          cvu = Array.new(22) { rand(0..9) }.join
+          break cvu unless Account.exists?(cvu: cvu)
+        end
+      end
 
+  def generate_unique_alias
+    words = %w[sol rio luna casa mar azul perro gato nube flor monte cielo fuego aire roca]
+    loop do
+      alias_str = 3.times.map { words.sample }.join('.')
+      break alias_str unless Account.exists?(account_alias: alias_str)
+    end
+  end
+end
 
 #-------- RUTAS DE REGISTRO EN DOS PASOS ---------
   # Paso 1: Muestra el formulario inicial (datos personales)
@@ -77,7 +92,12 @@ class App < Sinatra::Application
         password: params[:password],
         person: person
       )
-  
+      Account.create!(
+      user: user,
+      cvu: generate_unique_cvu,
+      account_alias: generate_unique_alias,
+      balance: 0
+    )
       session[:user_id] = user.id
       session.delete(:signup_data_step1)
       redirect '/'
