@@ -1,0 +1,11 @@
+<h2>Retirar dinero</h2>
+
+<% if @error %>
+  <p style="color:red"><%= @error %></p>
+<% end %>
+
+<form action="/retirar" method="post">
+  <label for="monto">Monto a retirar:</label>
+  <input type="number" name="monto" id="monto" step="0.01" min="0.01" required>
+  <button type="submit">Retirar</button>
+</form>

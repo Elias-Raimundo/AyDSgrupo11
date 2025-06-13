@@ -38,6 +38,10 @@ class App < Sinatra::Application
       break alias_str unless Account.exists?(account_alias: alias_str)
     end
   end
+
+  def formatted_money(amount)
+      sprintf('%.2f', amount).gsub(/(\d)(?=(\d{3})+\.)/, '\\1,')
+  end
 end
 
 #-------- RUTAS DE REGISTRO EN DOS PASOS ---------
@@ -134,9 +138,85 @@ end
     erb :welcome
   end
 
+  get '/ingresar' do
+    redirect '/login' unless session[:user_id]
+    @usuario = User.find(session[:user_id])
+    erb :ingresar
+  end
+
+  post '/ingresar' do
+    redirect '/login' unless session[:user_id]
+
+    monto = params[:monto].to_f
+    if monto <= 0
+      @error = "El monto debe ser mayor a 0."
+      return erb :ingresar
+    end
+
+    user = User.find(session[:user_id])
+    cuenta = user.account
+
+    unless cuenta
+      @error = "No se encontró cuenta para el usuario."
+      return erb :ingresar
+    end
+
+    # En caso que balance sea nil (por ejemplo, cuenta creada sin balance), inicializar en 0
+    cuenta.balance ||= 0
+
+    cuenta.balance += monto
+    if cuenta.save
+      redirect '/principal'
+    else
+      @error = "Error al actualizar el balance."
+      erb :ingresar
+    end
+  end
+
+  get '/retirar' do
+    redirect '/login' unless session[:user_id]
+    @usuario = User.find(session[:user_id])
+    erb :retirar
+  end
+
+  post '/retirar' do
+    redirect '/login' unless session[:user_id]
+
+    monto = params[:monto].to_f
+    if monto <= 0
+      @error = "El monto debe ser mayor a 0."
+      return erb :retirar
+    end
+
+    user = User.find(session[:user_id])
+    cuenta = user.account
+
+    unless cuenta
+      @error = "No se encontró cuenta para el usuario."
+      return erb :retirar
+    end
+
+    cuenta.balance ||= 0
+
+    if monto > cuenta.balance
+      @error = "Saldo insuficiente para realizar el retiro."
+      return erb :retirar
+    end
+
+    cuenta.balance -= monto
+    if cuenta.save
+      redirect '/principal'
+    else
+      @error = "Error al actualizar el balance."
+      erb :retirar
+    end
+  end
+
+
   get '/principal' do
     redirect '/login' unless session[:user_id] # Verifica si el usuario está logueado
     @usuario = User.find(session[:user_id])
+    @cuenta = @usuario.account
     erb :principal
   end
   
