@@ -15,12 +15,11 @@
     }
 
     .signup-container {
-      background: transparent;
-      text-align: center;
       width: 100%;
-      max-width: 400px;
+      max-width: 500px;
       padding: 20px;
       box-sizing: border-box;
+      text-align: center;
     }
 
     h1 {
@@ -29,22 +28,33 @@
       color: white;
     }
 
+    h2 {
+      margin: 10px 0 30px;
+      font-size: 20px;
+      color: #001d4a;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
     input[type="email"],
     input[type="password"] {
       width: 100%;
       padding: 15px;
-      margin: 10px 0;
+      margin-bottom: 25px; /* espacio entre inputs */
       border: none;
       border-radius: 20px;
       background-color: #d4e4f7;
       color: #333;
       font-size: 16px;
+      box-sizing: border-box;
     }
 
     button {
       width: 100%;
       padding: 15px;
-      margin-top: 20px;
       border: none;
       border-radius: 20px;
       background-color: #001d4a;
@@ -82,12 +92,27 @@
 </head>
 <body>
   <div class="signup-container">
+    <img src="/logoVault.png" alt="Logo de Vault" width="50">
     <h1>vault</h1>
+    <h2>DATOS DE USUARIO</h2>
     <form action="/" method="post">
-      <input type="email" name="email" placeholder="Usuario-email" required>
+      <input type="email" name="email" placeholder="Email" required>
       <input type="password" name="password" placeholder="Contraseña" required>
+      <input type="password" name="confirm_password" placeholder="Confirmar contraseña" required>
       <button type="submit">REGISTRARME</button>
     </form>
   </div>
+  <script>
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function (e) {
+      const password = form.password.value;
+      const confirm = form.confirm_password.value;
+
+      if (password !== confirm) {
+        e.preventDefault(); // evita que se envíe
+        alert('Las contraseñas no coinciden');
+      }
+    });
+  </script>
 </body>
 </html>

@@ -80,7 +80,7 @@ class App < Sinatra::Application
   
       session[:user_id] = user.id
       session.delete(:signup_data_step1)
-      redirect '/welcome'
+      redirect '/'
     rescue ActiveRecord::RecordInvalid => e
       @error = e.record.errors.full_messages.join(', ')
       erb :signup2
@@ -106,6 +106,9 @@ class App < Sinatra::Application
     end
   end
 
+  get '/autenticacionEmail' do
+    erb :autenticacionEmail
+  end 
 
   get '/' do
     erb :welcome
