@@ -1,0 +1,19 @@
+<h2>Transferir Dinero</h2>
+
+<% if @error %>
+  <div class="error"><%= @error %></div>
+<% elsif @success %>
+  <div class="success"><%= @success %></div>
+<% end %>
+
+<form action="/transferir" method="post">
+  <label for="cvu_destino">CVU o alias destino:</label>
+  <input type="text" name="destino" id="cvu_destino" required>
+
+  <label for="monto">Monto:</label>
+  <input type="number" name="monto" step="0.01" min="0.01" required>
+
+  <button type="submit">Transferir</button>
+</form>
+
+<a class="back-link" href="/principal">← Volver al inicio</a>

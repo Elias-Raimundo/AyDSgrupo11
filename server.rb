@@ -279,6 +279,57 @@ end
     end
   end
 
+  # ---------- TRANSFERENCIAS ENTRE USUARIOS ----------
+  get '/transferir' do
+    redirect '/login' unless session[:user_id]
+    erb :transferir
+  end
+
+  post '/transferir' do
+    redirect '/login' unless session[:user_id]
+
+    monto = params[:monto].to_f
+    destino = params[:destino].strip
+
+    if monto <= 0
+      @error = "El monto debe ser mayor a 0."
+      return erb :transferir
+    end
+
+    origen_user = User.find(session[:user_id])
+    cuenta_origen = origen_user.account
+
+    cuenta_destino = Account.find_by(cvu: destino) || Account.find_by(account_alias: destino)
+
+    if cuenta_destino.nil?
+      @error = "No se encontró la cuenta de destino."
+      return erb :transferir
+    end
+
+    if cuenta_origen.id == cuenta_destino.id
+      @error = "No puedes transferirte a tu propia cuenta."
+      return erb :transferir
+    end
+
+    if cuenta_origen.balance < monto
+      @error = "Saldo insuficiente."
+      return erb :transferir
+    end
+
+    begin
+      Transaction.create!(
+        source_account: cuenta_origen,
+        target_account: cuenta_destino,
+        amount: monto
+      )
+      @success = "Transferencia realizada con éxito."
+      erb :transferir
+    rescue => e
+      @error = "Error en la transferencia: #{e.message}"
+      erb :transferir
+    end
+  end
+
 
   get '/principal' do
     redirect '/login' unless session[:user_id] # Verifica si el usuario está logueado
