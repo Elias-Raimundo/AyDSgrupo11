@@ -140,7 +140,12 @@
       <div class="balance-card">
         <div>
           <h2>$<%= formatted_money(@cuenta&.balance || 0) %></h2>
-          <button>Mi CVU</button>
+          <button onclick="mostrarCVU()">Mi CVU</button>
+          <!-- Recuadro oculto con CVU y alias -->
+    <div id="cvu-info" style="display: none; margin-top: 10px; background: white; padding: 10px; border-radius: 8px; color: black; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+      <p><strong>CVU:</strong> <%= @cuenta&.cvu || 'No disponible' %></p>
+      <p><strong>Alias:</strong> <%= @cuenta&.account_alias || 'No disponible' %></p>
+    </div>
         </div>
         <div class="actions-grid">
           <a href="/ingresar" class="action-button">Ingresar</a>
@@ -173,5 +178,16 @@
       </div>
     </div>
   </div>
+  <script>
+  function mostrarCVU() {
+    const cvuInfo = document.getElementById("cvu-info");
+    if (cvuInfo.style.display === "none") {
+      cvuInfo.style.display = "block";
+    } else {
+      cvuInfo.style.display = "none";
+    }
+  }
+</script>
+
 </body>
 </html>

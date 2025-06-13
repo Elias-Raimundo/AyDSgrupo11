@@ -1,11 +1,104 @@
-<h2>Retirar dinero</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Retirar Dinero - Vault</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Helvetica', sans-serif;
+      background: linear-gradient(to bottom, #2c587f, #c8e0f7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-<% if @error %>
-  <p style="color:red"><%= @error %></p>
-<% end %>
+    .container {
+      background-color: #ffffff20;
+      padding: 40px;
+      border-radius: 20px;
+      width: 350px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      text-align: center;
+      color: white;
+    }
 
-<form action="/retirar" method="post">
-  <label for="monto">Monto a retirar:</label>
-  <input type="number" name="monto" id="monto" step="0.01" min="0.01" required>
-  <button type="submit">Retirar</button>
-</form>
+    h2 {
+      margin-bottom: 30px;
+      font-size: 24px;
+      color: #002c6c;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      text-align: left;
+      color: black;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 25px;
+      background-color: #f2f2f2;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #00264d;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #004080;
+    }
+
+    .back-link {
+      display: block;
+      margin-top: 20px;
+      color: black;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .error {
+      color: #ffcccc;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Retirar Dinero</h2>
+
+    <% if @error %>
+      <div class="error"><%= @error %></div>
+    <% end %>
+
+    <form action="/retirar" method="post">
+      <label for="monto">Monto a retirar:</label>
+      <input type="number" name="monto" id="monto" step="0.01" min="0.01" required>
+      <button type="submit">Retirar</button>
+    </form>
+
+    <a href="/principal" class="back-link">← Volver al inicio</a>
+  </div>
+</body>
+</html>

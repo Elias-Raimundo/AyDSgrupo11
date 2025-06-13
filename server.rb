@@ -34,7 +34,7 @@ class App < Sinatra::Application
       end
 
   def generate_unique_alias
-    words = %w[sol rio luna casa mar azul perro gato nube flor monte cielo fuego aire roca]
+    words = %w[sol rio luna casa mar azul perro gato nube flor monte cielo fuego aire roca barco auto moto coche avión plaza puerta planeta balde hoja manta] 
     loop do
       alias_str = 3.times.map { words.sample }.join('.')
       break alias_str unless Account.exists?(account_alias: alias_str)
