@@ -136,6 +136,7 @@ end
 
   get '/principal' do
     redirect '/login' unless session[:user_id] # Verifica si el usuario está logueado
+    @usuario = User.find(session[:user_id])
     erb :principal
   end
   

@@ -27,15 +27,16 @@
             justify-content: space-between;
             align-items: center;
             width: 205%;
-            background-color: #002c6c;
+            background-color: #c8e0f7;
             padding: 10px 20px;
-            border-radius: 8px;
+            border-radius: 12px;
+            color: black;
         }
 
-        .header .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .header .user-info span {
+            color: black;
+            font-weight: bold;
+            margin-left: 10px;
         }
 
         .header .menu-icon {
@@ -53,8 +54,8 @@
         }
 
         .balance-card {
-            background: #ffffff;
-            color: #000;
+            background: #c8e0f7;
+            color: black;
             padding: 15px;
             border-radius: 10px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -81,8 +82,8 @@
         }
 
         .activity-card {
-            background: #ffffff;
-            color: #000;
+            background: #c8e0f7;
+            color: black;
             padding: 15px;
             border-radius: 10px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -94,15 +95,28 @@
             justify-content: space-evenly;
             align-items: center;
             width: 100%;
-            background-color: #3569a0;
-            padding: 10px 0;
-            border-radius: 8px;
+            background-color: #002c6c;
+            padding: 25px 0;
+            
             margin-top: 20px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            color: white;
+            box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
         }
 
         .footer .footer-icon {
             font-size: 24px;
             cursor: pointer;
+        }
+
+        .footer-icon img {
+            width: 20px; /* Ajusta el tamaño del ícono */
+            height: 20px;
+            object-fit: cover; /* Ajusta cómo se escala la imagen */
         }
     </style>
 </head>
@@ -111,8 +125,8 @@
         <!-- Header -->
         <div class="header">
             <div class="user-info">
-                <img src="/path/to/avatar.png" alt="Avatar" width="40" height="40" style="border-radius: 50%;">
-                <span>Usuario</span>
+            <img src="/logoVaultAzul.png" alt="Logo" width="20" height="20">
+                <span>¡Hola, <%= @usuario.person.name %>!</span>
             </div>
             <div class="menu-icon">☰</div>
         </div>
@@ -146,10 +160,16 @@
 
         <!-- Footer -->
         <div class="footer">
-            <div class="footer-icon"></div>
-            <div class="footer-icon"></div>
-            <div class="footer-icon"></div>
+        <div class="footer-icon">
+            <img src="/icon1.png" alt="Ícono 1">
         </div>
+        <div class="footer-icon">
+            <img src="/icon2.png" alt="Ícono 2">
+        </div>
+        <div class="footer-icon">
+            <img src="/icon3.png" alt="Ícono 3">
+        </div>
+    </div>
     </div>
 </body>
 </html>
