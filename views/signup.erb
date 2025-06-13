@@ -95,6 +95,9 @@
     <img src="/logoVault.png" alt="Logo de Vault" width="50">
     <h1>vault</h1>
     <h2>DATOS PERSONALES</h2>
+    <% if @error %>
+      <p style="color: red;"><%= @error %></p>
+    <% end %>
     <form action="/signup2" method="post">
       <input type="text" name="nombre" placeholder="Nombre" required>
       <input type="text" name="apellido" placeholder="Apellido" required>

@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 ruby '3.2.2'
 
+gem 'mail'
 gem 'sinatra', '~> 4.1'
 gem 'rackup'
 gem 'puma', '~> 6.6'

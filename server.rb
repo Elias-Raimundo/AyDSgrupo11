@@ -9,6 +9,8 @@ require 'erb'
 require 'logger'
 require 'bigdecimal'
 require 'bcrypt'
+require 'mail'
+require_relative './config/mail_config'
 
 class App < Sinatra::Application
   set :public_folder, 'public'
@@ -52,6 +54,10 @@ end
 
   # Procesa el formulario de registro
   post '/signup2' do
+      if Person.exists?(dni: params[:dni])
+        @error = "El DNI ya está registrado."
+        return erb :signup
+    end
     session[:signup_data_step1] = {
       nombre: params[:nombre],
       apellido: params[:apellido],
@@ -64,13 +70,8 @@ end
 
   # Paso 2: Muestra el formulario de registro (datos de usuario)
   get '/signup2' do
-    unless session[:signup_data_step1]
-      # Si no hay datos del paso 1, redirigimos al inicio del registro
-      redirect '/signup'
-    end
-
+    redirect '/signup' unless session[:signup_data_step1]
     erb :signup2
-
   end
 
   post '/' do
@@ -80,7 +81,47 @@ end
       @error = 'Error: Datos del primer paso de registro no encontrados.'
       return erb :signup
     end
-  
+
+    session[:signup_data_step2] = {
+      email: params[:email],
+      password: params[:password]
+    }
+
+    pin = rand(100000..999999).to_s
+    session[:confirmation_pin] = pin
+    session[:pin_expiry] = Time.now + 5 * 60
+
+    email_destinatario = params[:email]
+    require './config/mail_config'
+    Mail.deliver do
+      to email_destinatario
+      from 'vaultvirtualwallet@gmail.com'
+      subject 'Tu PIN de confirmación de Vault'
+      body "Tu código de verificación es: #{pin}"
+    end
+    redirect '/autenticacionEmail'
+  end
+
+    
+  post '/confirmar-pin' do
+      pin = params[:pin]
+
+      if pin != session[:confirmation_pin]
+        return "PIN incorrecto. <a href='/autenticacionEmail'>Intentá de nuevo</a>"
+      end
+
+      if Time.now > session[:pin_expiry]
+        return "El PIN expiró. <a href='/reenviar-pin'>Reenviar</a>"
+      end
+
+      step1_data = session[:signup_data_step1]
+      step2_data = session[:signup_data_step2]
+
+  if step1_data.nil? || step2_data.nil?
+    return "Error: datos incompletos. <a href='/signup'>Comenzar de nuevo</a>"
+  end
+
+  begin
     ActiveRecord::Base.transaction do
       # Crear la persona
       person = Person.create!(
@@ -89,28 +130,54 @@ end
         dni: step1_data[:dni],
         phone_number: step1_data[:telefono]
       )
-  
+
       # Crear el usuario
       user = User.create!(
-        email: params[:email],
-        password: params[:password],
+        email: step2_data[:email],
+        password: step2_data[:password],
         person: person
       )
+
       Account.create!(
       user: user,
       cvu: generate_unique_cvu,
       account_alias: generate_unique_alias,
       balance: 0
-    )
+      )
       session[:user_id] = user.id
-      session.delete(:signup_data_step1)
-      redirect '/'
+    end
+      
+    session.delete(:signup_data_step1)
+    session.delete(:signup_data_step2)
+    session.delete(:confirmation_pin)
+    session.delete(:pin_expiry)
+
+    redirect '/'
     rescue ActiveRecord::RecordInvalid => e
-      @error = e.record.errors.full_messages.join(', ')
-      erb :signup2
+      return "Error al registrar: #{e.record.errors.full_messages.join(', ')}"
     end
   end
-  
+
+   # Reenviar PIN
+  get '/reenviar-pin' do
+    email_destinatario = session.dig(:signup_data_step2, :email)
+    redirect '/signup2' unless email_destinatario
+
+    pin = rand(100000..999999).to_s
+    session[:confirmation_pin] = pin
+    session[:pin_expiry] = Time.now + 5 * 60
+
+    require './config/mail_config'
+    Mail.deliver do
+      to email_destinatario
+      from 'vaultvirtualwallet@gmail.com'
+      subject 'Tu PIN de confirmación de Vault'
+      body "Tu código de verificación es: #{pin}"
+    end
+
+    redirect '/autenticacionEmail'
+  end
+
 
   # Muestra el formulario de login
   get '/login' do
