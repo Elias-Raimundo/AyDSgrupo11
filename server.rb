@@ -99,7 +99,7 @@ class App < Sinatra::Application
     # Verifica que el usuario exista y la contraseña sea válida
     if user && user.authenticate(params[:password])
       session[:user_id] = user.id
-      redirect '/welcome'
+      redirect '/principal'
     else
       @error = 'Email o contraseña incorrectos'
       erb :login
@@ -113,4 +113,12 @@ class App < Sinatra::Application
   get '/' do
     erb :welcome
   end
+
+  get '/principal' do
+    redirect '/login' unless session[:user_id] # Verifica si el usuario está logueado
+    erb :principal
+  end
+  
 end
+
+

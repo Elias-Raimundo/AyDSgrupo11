@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, #2c587f, #c8e0f7);
+            display: flex;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 205%;
+            background-color: #002c6c;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+
+        .header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header .menu-icon {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .main-content {
+            display: flex;
+            justify-content: space-between;
+            width: 210%;
+            gap: 15px;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .balance-card {
+            background: #ffffff;
+            color: #000;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: 60%;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .action-button {
+            background: #ffffff;
+            color: #000;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .activity-card {
+            background: #ffffff;
+            color: #000;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            width: 50%;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            width: 100%;
+            background-color: #3569a0;
+            padding: 10px 0;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .footer .footer-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="user-info">
+                <img src="/path/to/avatar.png" alt="Avatar" width="40" height="40" style="border-radius: 50%;">
+                <span>Usuario</span>
+            </div>
+            <div class="menu-icon">☰</div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Balance Section -->
+            <div class="balance-card">
+                <h2>$*****</h2>
+                
+                <button>Mi CVU</button>
+                <div class="actions-grid">
+                    <div class="action-button">Ingresar</div>
+                    <div class="action-button">Transferir</div>
+                    <div class="action-button">Retirar</div>
+                    
+                    <div class="action-button">Ahorros</div>
+                    
+                    
+                    
+                </div>
+            </div>
+
+            <!-- Activity Section -->
+            <div class="activity-card">
+                <h3>Actividad</h3>
+                <p>No hay actividad reciente.</p>
+                <button>Ver más</button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-icon"></div>
+            <div class="footer-icon"></div>
+            <div class="footer-icon"></div>
+        </div>
+    </div>
+</body>
+</html>
