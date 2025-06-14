@@ -298,31 +298,48 @@ end
 
   post '/ingresar' do
     redirect '/login' unless session[:user_id]
-
+  
     monto = params[:monto].to_f
     if monto <= 0
       @error = "El monto debe ser mayor a 0."
       return erb :ingresar
     end
-
+  
     user = User.find(session[:user_id])
     cuenta = user.account
-
+  
     unless cuenta
       @error = "No se encontró cuenta para el usuario."
       return erb :ingresar
     end
-
-    # En caso que balance sea nil (por ejemplo, cuenta creada sin balance), inicializar en 0
+  
+    # En caso que balance sea nil, inicializar en 0
     cuenta.balance ||= 0
-
-    cuenta.balance += monto
-    if cuenta.save
-      redirect '/principal'
-    else
-      @error = "Error al actualizar el balance."
-      erb :ingresar
+  
+    ActiveRecord::Base.transaction do
+      # Crear el ingreso en la tabla incomes
+      ingreso = Income.new(
+        amount: monto,
+        source: "Depósito manual", # Cambiar por el origen real si corresponde
+        user_id: user.id
+      )
+      
+      unless ingreso.save
+        @error = "Error al registrar el ingreso: #{ingreso.errors.full_messages.join(", ")}"
+        raise ActiveRecord::Rollback
+      end
+  
+      # Actualizar el balance de la cuenta
+      cuenta.balance += monto
+      unless cuenta.save
+        @error = "Error al actualizar el balance."
+        raise ActiveRecord::Rollback
+      end
     end
+  redirect '/principal'
+  rescue => e
+    @error ||= "Ocurrió un error inesperado: #{e.message}"
+    erb :ingresar
   end
 
   get '/retirar' do
@@ -333,35 +350,53 @@ end
 
   post '/retirar' do
     redirect '/login' unless session[:user_id]
-
+  
     monto = params[:monto].to_f
     if monto <= 0
       @error = "El monto debe ser mayor a 0."
       return erb :retirar
     end
-
+  
     user = User.find(session[:user_id])
     cuenta = user.account
-
+  
     unless cuenta
       @error = "No se encontró cuenta para el usuario."
       return erb :retirar
     end
-
+  
     cuenta.balance ||= 0
-
+  
     if monto > cuenta.balance
       @error = "Saldo insuficiente para realizar el retiro."
       return erb :retirar
     end
-
-    cuenta.balance -= monto
-    if cuenta.save
-      redirect '/principal'
-    else
-      @error = "Error al actualizar el balance."
-      erb :retirar
+  
+    ActiveRecord::Base.transaction do
+      # Crear el retiro en la tabla withdrawals
+      retiro = Withdrawal.new(
+        amount: monto,
+        reason: "Retiro manual", # Cambiar por la razón real si corresponde
+        user_id: user.id
+      )
+  
+      unless retiro.save
+        @error = "Error al registrar el retiro: #{retiro.errors.full_messages.join(", ")}"
+        raise ActiveRecord::Rollback
+      end
+  
+      # Actualizar el balance de la cuenta
+      cuenta.balance -= monto
+      unless cuenta.save
+        @error = "Error al actualizar el balance."
+        raise ActiveRecord::Rollback
+      end
     end
+  
+    redirect '/principal'
+  rescue => e
+    @error ||= "Ocurrió un error inesperado: #{e.message}"
+    erb :retirar
   end
 
   # ---------- TRANSFERENCIAS ENTRE USUARIOS ----------
@@ -416,13 +451,82 @@ end
   end
 
 
-  get '/principal' do
-    redirect '/login' unless session[:user_id] # Verifica si el usuario está logueado
-    @usuario = User.find(session[:user_id])
-    @cuenta = @usuario.account
-    erb :principal
-  end
+    get '/principal' do
+      redirect '/login' unless session[:user_id] # Verifica si el usuario está logueado
+    
+      @usuario = User.find(session[:user_id])
+      @cuenta = @usuario.account
+    
+      unless @cuenta
+        @error = "No se encontró cuenta para el usuario."
+        return erb :error
+      end
+    
+      # Traer ingresos y retiros del usuario
+      @incomes = Income.where(user_id: @usuario.id).select(:amount, :source, :created_at)
+      @withdrawals = Withdrawal.where(user_id: @usuario.id).select(:amount, :reason, :created_at)
+    
+      # Traer transacciones donde la cuenta es fuente o destino
+      @transactions_as_source = Transaction.where(source_account_id: @cuenta.id)
+      @transactions_as_target = Transaction.where(target_account_id: @cuenta.id)
+    
+      # Combinar actividades en un arreglo
+      @activities = obtener_todas_las_actividades
+      
+    
+      erb :principal
+    end
+
+    get '/actividades' do
+      @actividades = obtener_todas_las_actividades # Método para obtener todas las actividades
+      erb :actividad
+    end
   
+    def obtener_todas_las_actividades
+      if session[:user_id]
+        user = User.find(session[:user_id])
+        account = user.account
+    
+        incomes = Income.where(user_id: user.id).select(:amount, :source, :created_at)
+        withdrawals = Withdrawal.where(user_id: user.id).select(:amount, :reason, :created_at)
+    
+        # Precargamos las asociaciones para evitar N+1
+        transactions_as_source = Transaction.includes(target_account: { user: :person })
+                                           .where(source_account_id: account.id)
+        transactions_as_target = Transaction.includes(source_account: { user: :person })
+                                           .where(target_account_id: account.id)
+    
+        activities = (incomes.map do |income|
+                        { type: 'Ingreso', amount: income.amount, details: income.source, date: income.created_at }
+                      end +
+                      withdrawals.map do |withdrawal|
+                        { type: 'Retiro', amount: -withdrawal.amount, details: withdrawal.reason, date: withdrawal.created_at }
+                      end +
+                      transactions_as_source.map do |transaction|
+                        target_person = transaction.target_account.user.person
+                        {
+                          type: 'Transferencia Enviada',
+                          amount: -transaction.amount,
+                          details: "A #{target_person.name} #{target_person.surname}",
+                          date: transaction.created_at
+                        }
+                      end +
+                      transactions_as_target.map do |transaction|
+                        source_person = transaction.source_account.user.person
+                        {
+                          type: 'Transferencia Recibida',
+                          amount: transaction.amount,
+                          details: "De #{source_person.name} #{source_person.surname}",
+                          date: transaction.created_at
+                        }
+                      end).sort_by { |activity| activity[:date] }.reverse
+    
+        return activities
+      else
+        return []
+      end
+    end
+
 end
 
 

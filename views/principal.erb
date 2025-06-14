@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Página Principal</title>
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css" />
   <style>
     body {
       margin: 0;
@@ -74,10 +74,11 @@
       border-radius: 10px;
       box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
       flex: 1;
-      height: 500px; /* Altura aumentada */
+      height: 500px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: space-between; /* Asegura que el contenido se distribuya */
+      position: relative; /* Para usar position absoluta en el botón */
     }
 
     .actions-grid {
@@ -121,6 +122,27 @@
       height: 20px;
       object-fit: cover;
     }
+
+    /* Ocultar actividades extras */
+    .hidden-activity {
+      display: none;
+    }
+
+    /* Botón ver más fijo abajo */
+    #toggle-activities-btn {
+    background: #004080;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 10px; /* Botón con bordes redondeados */
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    bottom: 15px; /* Alineado con el padding del contenedor */
+    left: 15px;
+    right: 15px; /* Coincide con el padding */
+  }
   </style>
 </head>
 <body>
@@ -128,7 +150,7 @@
     <!-- Header -->
     <div class="header">
       <div class="user-info">
-        <img src="/logoVaultAzul.png" alt="Logo" width="20" height="20">
+        <img src="/logoVaultAzul.png" alt="Logo" width="20" height="20" />
         <span>¡Hola, <%= @usuario.person.name %>!</span>
       </div>
       <div class="menu-icon">☰</div>
@@ -142,10 +164,13 @@
           <h2>$<%= formatted_money(@cuenta&.balance || 0) %></h2>
           <button onclick="mostrarCVU()">Mi CVU</button>
           <!-- Recuadro oculto con CVU y alias -->
-    <div id="cvu-info" style="display: none; margin-top: 10px; background: white; padding: 10px; border-radius: 8px; color: black; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
-      <p><strong>CVU:</strong> <%= @cuenta&.cvu || 'No disponible' %></p>
-      <p><strong>Alias:</strong> <%= @cuenta&.account_alias || 'No disponible' %></p>
-    </div>
+          <div
+            id="cvu-info"
+            style="display: none; margin-top: 10px; background: white; padding: 10px; border-radius: 8px; color: black; box-shadow: 0 2px 6px rgba(0,0,0,0.2);"
+          >
+            <p><strong>CVU:</strong> <%= @cuenta&.cvu || 'No disponible' %></p>
+            <p><strong>Alias:</strong> <%= @cuenta&.account_alias || 'No disponible' %></p>
+          </div>
         </div>
         <div class="actions-grid">
           <a href="/ingresar" class="action-button">Ingresar</a>
@@ -157,37 +182,55 @@
 
       <!-- Activity Section -->
       <div class="activity-card">
-        <div>
-          <h3>Actividad</h3>
+        <h3>Actividad</h3>
+        <% if @activities.any? %>
+          <ul style="list-style-type: none; padding: 0;">
+            <% @activities.each_with_index do |activity, index| %>
+              <li
+                class="<%= 'hidden-activity' if index >= 4 %>"
+                style="margin-bottom: 10px; padding: 10px; border-bottom: 1px solid #ddd;"
+              >
+                <span><strong><%= activity[:type] %>:</strong></span>
+                <span style="color: <%= activity[:amount] < 0 ? 'red' : 'green' %>;">
+                  <%= sprintf("$%.2f", activity[:amount]) %>
+                </span>
+                <p style="margin: 5px 0;"><%= activity[:details] %></p>
+                <small style="color: #666;"><%= activity[:date].strftime("%d/%m/%Y %H:%M") %></small>
+              </li>
+            <% end %>
+          </ul>
+          <% if @activities.size > 4 %>
+            <a href="/actividades" id="toggle-activities-btn" class="action-button">Ver más</a>
+          <% end %>
+        <% else %>
           <p>No hay actividad reciente.</p>
-        </div>
-        <button>Ver más</button>
+        <% end %>
       </div>
     </div>
 
     <!-- Footer -->
     <div class="footer">
       <div class="footer-icon">
-        <img src="/icon1.png" alt="Ícono 1">
+        <img src="/icon1.png" alt="Ícono 1" />
       </div>
       <div class="footer-icon">
-        <img src="/icon2.png" alt="Ícono 2">
+        <img src="/icon2.png" alt="Ícono 2" />
       </div>
       <div class="footer-icon">
-        <img src="/icon3.png" alt="Ícono 3">
+        <img src="/icon3.png" alt="Ícono 3" />
       </div>
     </div>
   </div>
-  <script>
-  function mostrarCVU() {
-    const cvuInfo = document.getElementById("cvu-info");
-    if (cvuInfo.style.display === "none") {
-      cvuInfo.style.display = "block";
-    } else {
-      cvuInfo.style.display = "none";
-    }
-  }
-</script>
 
+  <script>
+    function mostrarCVU() {
+      const cvuInfo = document.getElementById("cvu-info");
+      if (cvuInfo.style.display === "none") {
+        cvuInfo.style.display = "block";
+      } else {
+        cvuInfo.style.display = "none";
+      }
+    }
+  </script>
 </body>
 </html>

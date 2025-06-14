@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Actividades - Vault</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Helvetica', sans-serif;
+      background: linear-gradient(to bottom, #2c587f, #c8e0f7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden; /* Evita el scroll en la página */
+    }
+
+    .container {
+      background-color: #c8e0f7;
+      padding: 20px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 600px;
+      height: 90%; /* Limita la altura para que no desborde */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      color: white;
+
+      overflow-y: auto; /* Activa scroll interno */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none;  /* IE y Edge */
+    }
+
+    /* Chrome, Safari y Opera */
+    .container::-webkit-scrollbar {
+      display: none;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 24px;
+      text-align: center;
+      color: #002c6c;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      background-color: #ffffff10;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      color: black;
+    }
+
+    li strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    li span {
+      font-size: 18px;
+      font-weight: bold;
+      display: block;
+    }
+
+    li p {
+      font-size: 14px;
+      margin: 5px 0;
+    }
+
+    li small {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .back-link {
+      display: block;
+      margin-top: 20px;
+      text-align: center;
+      color: black;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Todas las Actividades</h1>
+
+    <ul>
+      <% @actividades.each do |actividad| %>
+        <li>
+          <strong><%= actividad[:type] %>:</strong>
+          <span style="color: <%= actividad[:amount] < 0 ? 'red' : 'green' %>;">
+            <%= sprintf("$%.2f", actividad[:amount]) %>
+          </span>
+          <p><%= actividad[:details] %></p>
+          <small><%= actividad[:date].strftime("%d/%m/%Y %H:%M") %></small>
+        </li>
+      <% end %>
+    </ul>
+
+    <a href="/principal" class="back-link">← Volver al inicio</a>
+  </div>
+</body>
+</html>
