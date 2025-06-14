@@ -68,6 +68,7 @@ end
     redirect '/signup2'
   end
 
+
   # Paso 2: Muestra el formulario de registro (datos de usuario)
   get '/signup2' do
     redirect '/signup' unless session[:signup_data_step1]
@@ -178,6 +179,26 @@ end
     redirect '/autenticacionEmail'
   end
 
+  get '/reenviar-pin-contrasena' do
+  email_destinatario = session[:recovery_email]
+  redirect '/olvideMiContrasena' unless email_destinatario
+
+  pin = rand(100000..999999).to_s
+  session[:recovery_pin] = pin
+  session[:recovery_pin_expiry] = Time.now + 5 * 60
+
+  require './config/mail_config'
+  Mail.deliver do
+    to email_destinatario
+    from 'vaultvirtualwallet@gmail.com'
+    subject 'Tu PIN de recuperación de Vault'
+    body "Tu código de verificación es: #{pin}"
+  end
+
+  redirect '/verificarPinRecuperacion'
+end
+
+
 
   # Muestra el formulario de login
   get '/login' do
@@ -200,6 +221,70 @@ end
   get '/autenticacionEmail' do
     erb :autenticacionEmail
   end 
+
+  get '/olvideMiContrasena' do
+    erb :olvideMiContrasena
+  end
+
+  post '/enviarPinRecuperacion' do
+    user = User.find_by(email: params[:email])
+    
+    if user
+      pin = rand(100000..999999).to_s
+      session[:recovery_email] = user.email
+      session[:recovery_pin] = pin
+      session[:recovery_pin_expiry] = Time.now + 5 * 60
+
+      Mail.deliver do
+        to user.email
+        from 'vaultvirtualwallet@gmail.com'
+        subject 'Recuperación de contraseña Vault'
+        body "Tu código de recuperación es: #{pin}"
+      end
+
+      redirect '/verificarPinRecuperacion'
+    else
+      @error = "No se encontró un usuario con ese email."
+      erb :olvideMiContrasena
+    end
+  end
+
+  get '/verificarPinRecuperacion' do
+    erb :verificarPinRecuperacion
+  end
+
+  post '/verificarPinRecuperacion' do
+    if params[:pin] == session[:recovery_pin] && Time.now < session[:recovery_pin_expiry]
+      redirect '/nuevaContrasena'
+    else
+      @error = "PIN inválido o expirado."
+      erb :verificarPinRecuperacion
+    end
+  end
+
+  get '/nuevaContrasena' do
+    erb :nuevaContrasena
+  end
+
+  post '/nuevaContrasena' do
+    user = User.find_by(email: session[:recovery_email])
+
+    if user
+      user.password = params[:password]
+      if user.save
+        session.delete(:recovery_email)
+        session.delete(:recovery_pin)
+        session.delete(:recovery_pin_expiry)
+        redirect '/login'
+      else
+        @error = "Error al guardar la nueva contraseña."
+        erb :nuevaContrasena
+      end
+    else
+      @error = "Usuario no encontrado."
+      erb :nuevaContrasena
+    end
+  end
 
   get '/' do
     erb :welcome

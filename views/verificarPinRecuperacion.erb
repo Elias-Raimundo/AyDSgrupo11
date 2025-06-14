@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Vault - Login</title>
+  <title>Vault - Confirmar Email</title>
   <style>
     body {
       margin: 0;
@@ -14,54 +14,55 @@
       height: 100vh;
     }
 
-    .signup-container {
+    .confirm-container {
       width: 100%;
-      max-width: 500px;
+      max-width: 400px;
       padding: 20px;
       box-sizing: border-box;
       text-align: center;
     }
 
     h1 {
-      margin: 10px 0 30px;
+      margin: 10px 0;
       font-size: 24px;
       color: white;
     }
 
     h2 {
       margin: 10px 0 30px;
-      font-size: 20px;
+      font-size: 18px;
       color: #001d4a;
     }
 
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    p {
+      color: #333;
+      font-size: 14px;
+      margin-bottom: 20px;
     }
 
-    input[type="email"],
-    input[type="password"],
+    input[type="text"] {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 25px;
+      border: none;
+      border-radius: 20px;
+      background-color: #d4e4f7;
+      color: #333;
+      font-size: 16px;
+      box-sizing: border-box;
+      text-align: center;
+      letter-spacing: 5px;
+    }
+
     button {
       width: 100%;
       padding: 15px;
       border: none;
       border-radius: 20px;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
-
-    input[type="email"],
-    input[type="password"] {
-      background-color: #d4e4f7;
-      color: #333;
-    }
-
-    button {
       background-color: #001d4a;
       color: white;
+      font-size: 16px;
       font-weight: bold;
-      margin-top: 10px;
       cursor: pointer;
       transition: background-color 0.3s;
     }
@@ -70,35 +71,32 @@
       background-color: #002c6c;
     }
 
-    .forgot {
-      text-align: center;
+    .resend {
+      margin-top: 20px;
       font-size: 14px;
       color: #001d4a;
-      text-decoration: none;
-      margin-top: 5px;
-      display: block;
     }
 
-    .forgot:hover {
+    .resend a {
+      color: #001d4a;
       text-decoration: underline;
+      cursor: pointer;
     }
-
   </style>
 </head>
 <body>
-  <div class="signup-container">
+  <div class="confirm-container">
     <img src="/logoVault.png" alt="Logo de Vault" width="50">
     <h1>vault</h1>
-    <h2>INICIAR SESIÓN</h2>
-    <% if @error %>
-      <p style="color: red;"><%= @error %></p>
-    <% end %>
-    <form action="/login" method="post">
-      <input type="email" name="email" placeholder="Email" required>
-      <input type="password" name="password" placeholder="Contraseña" required>
-      <a class="forgot" href="/olvideMiContrasena">¿Olvidaste tu contraseña?</a>
-      <button type="submit">INGRESAR</button>
+    <h2>CONFIRMACIÓN DE EMAIL</h2>
+    <p>Hemos enviado un PIN de 6 dígitos a tu correo. Ingrésalo a continuación para confirmar tu cuenta.</p>
+    <form action="/verificarPinRecuperacion"  method="POST">
+      <input type="text" name="pin" placeholder="------" maxlength="6" required pattern="\d{6}">
+      <button type="submit">VALIDAR PIN</button>
     </form>
+    <div class="resend">
+      ¿No recibiste el código? <a href="/reenviar-pin-contrasena">Reenviar PIN</a>
+    </div>
   </div>
 </body>
 </html>

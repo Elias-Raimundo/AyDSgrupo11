@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Vault - Nueva Contraseña</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom, #2c587f, #c8e0f7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .confirm-container {
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 10px 0;
+      font-size: 24px;
+      color: white;
+    }
+
+    h2 {
+      margin: 10px 0 30px;
+      font-size: 18px;
+      color: #001d4a;
+    }
+
+    p {
+      color: #333;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    input[type="password"] {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 25px;
+      border: none;
+      border-radius: 20px;
+      background-color: #d4e4f7;
+      color: #333;
+      font-size: 16px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 20px;
+      background-color: #001d4a;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #002c6c;
+    }
+  </style>
+</head>
+<body>
+  <div class="confirm-container">
+    <img src="/logoVault.png" alt="Logo de Vault" width="50">
+    <h1>vault</h1>
+    <h2>Ingresá tu nueva contraseña</h2>
+    <p>Elegí una nueva contraseña para acceder a tu cuenta.</p>
+    <form action="/nuevaContrasena" method="post">
+      <input type="password" name="password" placeholder="Nueva contraseña" required>
+      <input type="password" name="confirm_password" placeholder="Confirmar contraseña" required>
+      <button type="submit">Guardar</button>
+    </form>
+  </div>
+</body>
+</html>
