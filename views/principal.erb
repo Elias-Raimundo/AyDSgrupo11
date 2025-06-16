@@ -161,7 +161,12 @@
       <!-- Balance Section -->
       <div class="balance-card">
         <div>
-          <h2>$<%= formatted_money(@cuenta&.balance || 0) %></h2>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <h2 id="saldo">$<%= formatted_money(@cuenta&.balance || 0) %></h2>
+            <button onclick="toggleSaldo()" style="background: none; border: none; cursor: pointer;">
+              <i id="icono-ojo" class="fa-solid fa-eye"></i>
+            </button>
+          </div>
           <button onclick="mostrarCVU()">Mi CVU</button>
           <!-- Recuadro oculto con CVU y alias -->
           <div
@@ -176,7 +181,8 @@
           <a href="/ingresar" class="action-button">Ingresar</a>
           <a href="/transferir" class="action-button">Transferir</a>
           <a href="/retirar" class="action-button">Retirar</a>
-          <div class="action-button">Ahorros</div>
+          <a href="/ahorros" class="action-button">Ahorros</a>
+
         </div>
       </div>
 
@@ -231,6 +237,26 @@
         cvuInfo.style.display = "none";
       }
     }
+
+    function toggleSaldo() {
+    const saldo = document.getElementById("saldo");
+    const icono = document.getElementById("icono-ojo");
+    const valorReal = saldo.getAttribute("data-real");
+
+    if (!valorReal) {
+      saldo.setAttribute("data-real", saldo.textContent);
+      saldo.textContent = "$***";
+      icono.classList.remove("fa-eye");
+      icono.classList.add("fa-eye-slash");
+    } else {
+      saldo.textContent = valorReal;
+      saldo.removeAttribute("data-real");
+      icono.classList.remove("fa-eye-slash");
+      icono.classList.add("fa-eye");
+    }
+  }
   </script>
 </body>
+    <script>
+</script>
 </html>

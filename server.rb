@@ -450,6 +450,40 @@ end
     end
   end
 
+  get '/ahorros' do
+    redirect '/login' unless session[:user_id]
+    @usuario = User.find(session[:user_id])
+    erb :ahorros
+  end
+
+  post '/ahorros' do
+    redirect '/login' unless session[:user_id]
+
+    amount = params[:amount].to_f
+    name = params[:name].strip
+    user = User.find(session[:user_id])
+    account = user.account
+
+    if amount <= 0
+      @error = "El monto debe ser mayor a 0."
+      return erb :ahorros
+    end
+
+    if name.empty?
+      @error = "El motivo no puede estar vacío."
+      return erb :ahorros
+    end
+
+    ahorro = Saving.new(amount: amount, name: name, account: account)
+
+    if ahorro.save
+      redirect '/principal'
+    else
+      @error = ahorro.errors.full_messages.join(", ")
+      erb :ahorros
+    end
+  end
+
 
     get '/principal' do
       redirect '/login' unless session[:user_id] # Verifica si el usuario está logueado
