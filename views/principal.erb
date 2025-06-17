@@ -66,6 +66,32 @@
       flex-direction: column;
       justify-content: space-between;
     }
+    
+      .boton-pildora {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 25px;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 14px;
+    border: 2px solid #003087;
+    background-color: #e6f0ff;
+    color: #003087;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .boton-pildora:hover {
+    background-color: #003087;
+    color: white;
+  }
+
+  .boton-pildora.activo {
+    background-color: #003087;
+    color: white;
+  }
+
 
     .activity-card {
       background: #c8e0f7;
@@ -178,10 +204,13 @@
           </div>
         </div>
         <div class="actions-grid">
-          <a href="/ingresar" class="action-button">Ingresar</a>
-          <a href="/transferir" class="action-button">Transferir</a>
-          <a href="/retirar" class="action-button">Retirar</a>
-          <a href="/ahorros" class="action-button">Ahorros</a>
+          <a href="/ingresar" class="boton-pildora">Ingresar</a>
+          <a href="/transferir" class="boton-pildora">Transferir</a>
+          <a href="/retirar" class="boton-pildora">Retirar</a>
+          <a href="/ahorros" class="boton-pildora">Ahorros</a>
+          <a href="/reserva">
+            <img src="/ahorros.png" alt="reserva" style="width: 50px; height: 50px; cursor: pointer;" />
+          </a>
 
         </div>
       </div>
@@ -197,9 +226,19 @@
                 style="margin-bottom: 10px; padding: 10px; border-bottom: 1px solid #ddd;"
               >
                 <span><strong><%= activity[:type] %>:</strong></span>
-                <span style="color: <%= activity[:amount] < 0 ? 'red' : 'green' %>;">
-                  <%= sprintf("$%.2f", activity[:amount]) %>
-                </span>
+                <%
+                  color = if activity[:type] == 'Reserva'
+                              '#f4d03f'  
+                            elsif activity[:amount] < 0
+                              'red'
+                            else
+                              'green'
+                            end
+                  %>
+                  <span style="color: <%= color %>;">
+                    <%= sprintf("$%.2f", activity[:amount]) %>
+                  </span>
+
                 <p style="margin: 5px 0;"><%= activity[:details] %></p>
                 <small style="color: #666;"><%= activity[:date].strftime("%d/%m/%Y %H:%M") %></small>
               </li>

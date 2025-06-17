@@ -1,15 +1,110 @@
-<h2>Registrar Ahorro</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registrar Ahorro - Vault</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Helvetica', sans-serif;
+      background: linear-gradient(to bottom, #2c587f, #c8e0f7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-<% if @error %>
-  <p style="color: red;"><%= @error %></p>
-<% end %>
+    .container {
+      background-color: #ffffff20;
+      padding: 40px;
+      border-radius: 20px;
+      width: 350px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      text-align: center;
+      color: white;
+    }
 
-<form action="/ahorros" method="post">
-  <label>Monto:</label>
-  <input type="number" step="0.01" name="amount" required><br><br>
+    h2 {
+      margin-bottom: 30px;
+      font-size: 24px;
+      color: #002c6c;
+    }
 
-  <label>Motivo:</label>
-  <input type="text" name="name" required><br><br>
+    label {
+      display: block;
+      margin-bottom: 8px;
+      text-align: left;
+      color: black;
+    }
 
-  <button type="submit">Guardar Ahorro</button>
-</form>
+    input[type="number"],
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 25px;
+      background-color: #f2f2f2;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #00264d;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #004080;
+    }
+
+    .back-link {
+      display: block;
+      margin-top: 20px;
+      color: black;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .error {
+      color: #ffcccc;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Registrar Ahorro</h2>
+
+    <% if @error %>
+      <div class="error"><%= @error %></div>
+    <% end %>
+
+    <form action="/ahorros" method="post">
+      <label for="amount">Monto:</label>
+      <input type="number" step="0.01" name="amount" id="amount" min="1" required>
+
+      <label for="name">Motivo:</label>
+      <input type="text" name="name" id="name" required>
+
+      <button type="submit">Guardar Ahorro</button>
+    </form>
+
+    <a href="/principal" class="back-link">← Volver al inicio</a>
+  </div>
+</body>
+</html>
+

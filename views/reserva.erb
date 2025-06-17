@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mi Reserva Total - Vault</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Helvetica', sans-serif;
+      background: linear-gradient(to bottom, #2c587f, #c8e0f7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #ffffff20;
+      padding: 40px;
+      border-radius: 20px;
+      width: 350px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      text-align: center;
+      color: white;
+    }
+
+    h2 {
+      margin-bottom: 30px;
+      font-size: 24px;
+      color: #002c6c;
+    }
+
+    p {
+      font-size: 18px;
+      color: black;
+    }
+
+    .message {
+      margin-top: 20px;
+      font-size: 16px;
+      color: black;
+    }
+
+    a.back-link {
+      display: block;
+      margin-top: 30px;
+      color: black;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    a.back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Mi Reserva Total</h2>
+
+    <% if @ahorro_total && @ahorro_total > 0 %>
+      <p>Has ahorrado un total de: <strong>$<%= sprintf('%.2f', @ahorro_total) %></strong></p>
+    <% else %>
+      <p class="message">No tenés reservas registradas.</p>
+    <% end %>
+
+    <a href="/principal" class="back-link">← Volver al inicio</a>
+  </div>
+</body>
+</html>
+
+

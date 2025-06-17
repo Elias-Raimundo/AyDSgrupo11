@@ -523,6 +523,8 @@ end
     
         incomes = Income.where(user_id: user.id).select(:amount, :source, :created_at)
         withdrawals = Withdrawal.where(user_id: user.id).select(:amount, :reason, :created_at)
+        savings = Saving.where(account_id: account.id).select(:amount, :name, :created_at)
+
     
         # Precargamos las asociaciones para evitar N+1
         transactions_as_source = Transaction.includes(target_account: { user: :person })
@@ -535,6 +537,9 @@ end
                       end +
                       withdrawals.map do |withdrawal|
                         { type: 'Retiro', amount: -withdrawal.amount, details: withdrawal.reason, date: withdrawal.created_at }
+                      end +
+                      savings.map do |saving|
+                        { type: 'Reserva', amount: -saving.amount, details: saving.name, date: saving.created_at }
                       end +
                       transactions_as_source.map do |transaction|
                         target_person = transaction.target_account.user.person
@@ -560,6 +565,24 @@ end
         return []
       end
     end
+
+  get '/reserva' do 
+    redirect '/login' unless session[:user_id]
+
+    user = User.find(session[:user_id])
+    cuenta = user.account
+
+    unless cuenta
+      @error = "No se encontró cuenta para el usuario."
+      return erb :error
+    end
+
+    @ahorro_total = Saving.where(account_id: cuenta.id).sum(:amount)
+
+    erb :reserva
+  end
+
+
 
 end
 
