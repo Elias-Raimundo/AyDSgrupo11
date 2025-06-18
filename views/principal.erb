@@ -274,6 +274,13 @@
                 <span>¡Hola, <%= @usuario.person.name %>!</span>
             </div>
             <div class="menu-icon">☰</div>
+            <!-- Menú desplegable -->
+            <div id="dropdown-menu" style="display: none; position: absolute; top: 70px; right: 30px; background: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000;">
+            <ul style="list-style: none; margin: 0; padding: 10px;">
+                <li style="padding: 8px 12px; cursor: pointer;" onclick="mostrarModalLogout()">Cerrar sesión</li>
+            </ul>
+            </div>
+
         </div>
 
         <div class="main-content">
@@ -391,6 +398,33 @@
                 icono.classList.add("fa-eye");
             }
         }
+
+        document.querySelector('.menu-icon').addEventListener('click', function () {
+        const menu = document.getElementById('dropdown-menu');
+        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        });
+
+        function mostrarModalLogout() {
+        document.getElementById('modal-logout').style.display = 'flex';
+        document.getElementById('dropdown-menu').style.display = 'none';
+        }
+
+        function ocultarModalLogout() {
+        document.getElementById('modal-logout').style.display = 'none';
+        }
+
+        function confirmarLogout() {
+        window.location.href = "/logout";
+}
+
     </script>
+    <!-- Modal de confirmación -->
+    <div id="modal-logout" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center;">
+    <div style="background: white; padding: 20px; border-radius: 10px; text-align: center; width: 300px;">
+    <p>¿Estás seguro que quieres cerrar sesión?</p>
+    <button onclick="confirmarLogout()" style="margin-right: 10px;">Sí</button>
+    <button onclick="ocultarModalLogout()">No</button>
+  </div>
+</div>
 </body>
 </html>

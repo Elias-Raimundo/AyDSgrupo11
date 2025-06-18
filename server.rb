@@ -599,7 +599,22 @@ end
     erb :reserva
   end
 
-  
+  get '/todas_las_reservas' do
+    redirect '/login' unless session[:user_id]
+
+    @usuario = User.find(session[:user_id])
+    @cuenta = @usuario.account
+    @reservas = Saving.where(account: @cuenta)
+
+    erb :todas_las_reservas
+  end
+
+
+  get '/logout' do
+    session.clear
+    redirect '/login'
+  end
+
 end
 
 

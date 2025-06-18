@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Todas las Reservas</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h2>Todas tus reservas</h2>
+    <ul class="reservas-list">
+      <% @reservas.each do |reserva| %>
+        <li style="margin-bottom: 10px; background: #fff; padding: 10px; border-radius: 8px;">
+          <strong>Motivo:</strong> <%= reserva.name %><br/>
+          <strong>Monto:</strong> $<%= sprintf('%.2f', reserva.amount) %>
+        </li>
+      <% end %>
+    </ul>
+    <a href="/principal" class="boton-pildora">Volver</a>
+  </div>
+</body>
+</html>
