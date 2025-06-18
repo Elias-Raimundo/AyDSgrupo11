@@ -1,22 +1,82 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Todas las Reservas</title>
-  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Helvetica', sans-serif;
+      background: linear-gradient(to bottom, #2c587f, #c8e0f7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #ffffff20;
+      padding: 40px;
+      border-radius: 20px;
+      width: 400px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      text-align: center;
+      color: white;
+    }
+
+    h2 {
+      margin-bottom: 30px;
+      font-size: 24px;
+      color: #002c6c;
+    }
+
+    .reservas-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0 0 20px 0;
+    }
+
+    .reservas-list li {
+      background-color: #ffffff;
+      color: black;
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 12px;
+      text-align: left;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .reservas-list li strong {
+      color: #002c6c;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: black;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h2>Todas tus reservas</h2>
     <ul class="reservas-list">
       <% @reservas.each do |reserva| %>
-        <li style="margin-bottom: 10px; background: #fff; padding: 10px; border-radius: 8px;">
-          <strong>Motivo:</strong> <%= reserva.name %><br/>
-          <strong>Monto:</strong> $<%= sprintf('%.2f', reserva.amount) %>
+        <li>
+          <strong>Motivo:</strong> <span><%= reserva.name %></span><br/>
+          <strong>Monto:</strong> <span>$<%= sprintf('%.2f', reserva.amount) %></span>
         </li>
       <% end %>
     </ul>
-    <a href="/principal" class="boton-pildora">Volver</a>
+    <a href="/principal" class="back-link">← Volver al inicio</a>
   </div>
 </body>
 </html>
