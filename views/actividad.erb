@@ -102,22 +102,24 @@
       <% @actividades.each do |actividad| %>
         <li>
           <strong><%= actividad[:type] %>:</strong>
-          <span style="color: <%= 
-            if actividad[:type] == 'Reserva'
-              '#004080'
-            elsif actividad[:amount] < 0
-              'red'
-            else
-              'green'
-            end
-          %>;">
-            <% signo = case actividad[:type]
-                      when 'Ingreso', 'Transferencia Recibida' then '+'
-                      when 'Retiro', 'Reserva', 'Transferencia Enviada' then '-'
-                      else ''
-                      end %>
-            <%= "#{signo}$#{sprintf('%.2f', actividad[:amount].abs)}" %>
-          </span>
+                        <%
+                            color = if actividad[:type]  == 'Ingreso a reserva' || actividad[:type] == 'Retiro de reserva'
+                                    '#001d4a'
+                                    elsif actividad[:amount] < 0
+                                    'red'
+                                    else
+                                    'green'
+                                    end
+
+                            signo = case actividad[:type]
+                                    when 'Ingreso', 'Transferencia Recibida', 'Ingreso a reserva' then '+'
+                                    when 'Retiro', 'Retiro de reserva', 'Transferencia Enviada' then '-'
+                                    else ''
+                                    end
+                        %>
+                        <span style="color: <%= color %>;">
+                            <%= "#{signo}$#{sprintf('%.2f', actividad[:amount].abs)}" %>
+                        </span>
           <p><%= actividad[:details] %></p>
           <small><%= actividad[:date].strftime("%d/%m/%Y %H:%M") %></small>
         </li>
