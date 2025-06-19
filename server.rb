@@ -105,15 +105,20 @@ end
 
     
   post '/confirmar-pin' do
-      pin = params[:pin]
+  pin = params[:pin]
 
-      if pin != session[:confirmation_pin]
-        return "PIN incorrecto. <a href='/autenticacionEmail'>Intentá de nuevo</a>"
-      end
+  if pin != session[:confirmation_pin]
+    @error = "El PIN ingresado es incorrecto."
+    return erb :autenticacionEmail
+  end
 
-      if Time.now > session[:pin_expiry]
-        return "El PIN expiró. <a href='/reenviar-pin'>Reenviar</a>"
-      end
+  if Time.now > session[:pin_expiry]
+    @error = "El PIN expiró. <a href='/reenviar-pin'>Reenviar</a>"
+    return erb :autenticacionEmail
+  end
+
+  
+
 
       step1_data = session[:signup_data_step1]
       step2_data = session[:signup_data_step2]

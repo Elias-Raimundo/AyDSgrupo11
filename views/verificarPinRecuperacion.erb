@@ -90,6 +90,10 @@
     <h1>vault</h1>
     <h2>CONFIRMACIÓN DE EMAIL</h2>
     <p>Hemos enviado un PIN de 6 dígitos a tu correo. Ingrésalo a continuación para confirmar tu cuenta.</p>
+    <% if @error %>
+  <div style="color: red; font-size: 14px; margin-bottom: 20px;"><%= @error %></div>
+    <% end %>
+
     <form action="/verificarPinRecuperacion"  method="POST">
       <input type="text" name="pin" placeholder="------" maxlength="6" required pattern="\d{6}">
       <button type="submit">VALIDAR PIN</button>
