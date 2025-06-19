@@ -81,7 +81,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 10px 15px;
+            padding: 10px 69px;
             border-radius: 25px;
             font-weight: bold;
             text-decoration: none;
@@ -139,7 +139,10 @@
 
         .reservas-card h3 {
             font-size: 1.2rem;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #004080;
         }
 
         .reservas-list {
@@ -167,6 +170,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transform: translateY(-3px); 
         }
 
         .reservas-list li strong {
@@ -181,6 +185,27 @@
             color: #2c587f;
         }
 
+        .mi-cvu-btn {
+            background: transparent;
+            color: #004080;
+            border: 2px solid #004080;
+            padding: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 10px;
+            width: 100px;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: block;
+            text-decoration: none;
+        }
+
+        .mi-cvu-btn:hover {
+            background-color: #004080;
+            color: white;
+        }
+
+
         /* Ocultar actividades extras (para la sección de actividad) */
         .hidden-activity {
             display: none;
@@ -188,36 +213,36 @@
 
         /* Botón ver más fijo abajo (para la sección de actividad) */
         #toggle-activities-btn {
-            background: #004080;
-            color: white;
-            border: none;
+            background: transparent;
+            color: #004080; 
+            border: 2px solid #004080;
             padding: 10px;
             font-weight: bold;
             cursor: pointer;
             border-radius: 10px;
-            box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.2);
             position: absolute;
             bottom: 15px;
             left: 15px;
             right: 15px;
-            text-align: center; /* Asegura que el texto esté centrado */
-            text-decoration: none; /* Elimina el subrayado de los enlaces */
+            text-align: center;
+            text-decoration: none;
+            font-size: 0.9rem;
         }
 
         #toggle-activities-btn:hover {
-            background: #002c6c;
+            background: transparent;
         }
 
         /* Estilo para el botón "Ver todas las reservas" */
         .btn-ver-todas-reservas {
             display: block; /* Ocupa su propia línea */
-            width: fit-content; /* Se ajusta al tamaño del texto */
+            width: 300px;
             margin-top: 15px; /* Espacio arriba del botón */
-            padding: 8px 15px;
+            padding: 10px;
             background-color: #004080;
             color: white;
             text-align: center;
-            border-radius: 20px; /* Estilo de píldora */
+            border-radius: 10px; /* Estilo de píldora */
             text-decoration: none; /* Quitar subrayado del enlace */
             font-weight: bold;
             font-size: 0.9rem;
@@ -288,12 +313,17 @@
                 <div class="balance-card">
                     <div>
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <h2 id="saldo">$<%= formatted_money(@cuenta&.balance || 0) %></h2>
+                            <h2 id="saldo" style="font-size: 1.7rem; margin-left: 20px;">
+                                $<%= formatted_money(@cuenta&.balance || 0) %>
+                            </h2>
                             <button onclick="toggleSaldo()" style="background: none; border: none; cursor: pointer;">
-                                <i id="icono-ojo" class="fa-solid fa-eye"></i>
+                                <i id="icono-ojo" class="fa-solid fa-eye" style="font-size: 15px;"></i>
                             </button>
+                            <a href="/reserva" style="display: block; margin-left: auto; width: fit-content; margin-right: 15px;">
+                                <img src="/reservas.png" alt="reserva" style="width: 50px; height: 50px; cursor: pointer;" />
+                            </a>
                         </div>
-                        <button onclick="mostrarCVU()">Mi CVU</button>
+                        <button onclick="mostrarCVU()" class="mi-cvu-btn">Mi CVU</button>
                         <div
                             id="cvu-info"
                             style="display: none; margin-top: 10px; background: white; padding: 10px; border-radius: 8px; color: black; box-shadow: 0 2px 6px rgba(0,0,0,0.2);"
@@ -306,15 +336,10 @@
                         <a href="/ingresar" class="boton-pildora">Ingresar</a>
                         <a href="/transferir" class="boton-pildora">Transferir</a>
                         <a href="/retirar" class="boton-pildora">Retirar</a>
-                        <a href="/ahorros" class="boton-pildora">Ahorros</a>
-                        <a href="/reserva">
-                            <img src="/ahorros.png" alt="reserva" style="width: 50px; height: 50px; cursor: pointer;" />
-                        </a>
                     </div>
                 </div>
-
                 <div class="reservas-card">
-                    <h3>Reservas</h3>
+                    <h3 style="color: #004080; text-align: center; position: relative; top: -13px;"> Últimas Reservas </h3>
                     <% if @reservas.any? %>
                         <ul class="reservas-list">
                             <% # Limita el número de reservas mostradas, por ejemplo, a las primeras 4 %>
@@ -327,49 +352,63 @@
                             <% end %>
                         </ul>
                         <% if @reservas.size > 3 %>
-                            <a href="/todas_las_reservas" class="btn-ver-todas-reservas">Ver todas las reservas</a>
+                            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
+                                <a href="/ahorros" class="btn-ver-todas-reservas">Crear nueva reserva</a>
+                                <a href="/todas_las_reservas" class="btn-ver-todas-reservas">Ver todas las reservas</a>
+                            </div>
                         <% end %>
                     <% else %>
                         <p>No hay reservas disponibles.</p>
                         <a href="/ahorros" class="btn-ver-todas-reservas">Crear mi primera reserva</a>
                     <% end %>
                 </div>
-            </div> <div class="activity-card">
-                <h3>Actividad</h3>
+            </div> <div class="activity-card" style="margin-top: 0; padding: 10px 15px 15px 15px;">
+                <h3 style="
+                    color: #004080; 
+                    margin-top: 0; 
+                    margin-left: 200px; 
+                    position: relative; 
+                    top: 10px; 
+                    text-decoration: underline;
+                    ">
+                    Actividad
+                </h3>
                 <% if @activities.any? %>
-                    <ul style="list-style-type: none; padding: 0;">
-                        <% @activities.each_with_index do |activity, index| %>
-                            <li
-                                class="<%= 'hidden-activity' if index >= 4 %>"
-                                style="margin-bottom: 10px; padding: 10px; border-bottom: 1px solid #ddd;"
-                            >
-                                <span><strong><%= activity[:type] %>:</strong></span>
-                                <%
-                                    color = if activity[:type] == 'Reserva'
-                                                '#f4d03f'
-                                            elsif activity[:amount] < 0
-                                                'red'
-                                            else
-                                                'green'
-                                            end
-                                %>
-                                <span style="color: <%= color %>;">
-                                    <%= sprintf("$%.2f", activity[:amount]) %>
-                                </span>
+                    <ul style="list-style-type: none; padding: 0; margin: 0; padding-bottom: 80px;">
+                    <% @activities.each_with_index do |activity, index| %>
+                        <% visible = index < 4 %>
+                        <% es_ultima = index == [@activities.size, 4].min - 1 %>
+                        <% borde = es_ultima ? '' : 'border-bottom: 2px solid rgba(0, 64, 128, 0.4);' %>
+                        <li
+                        class="<%= 'hidden-activity' unless visible %>"
+                        style="margin-bottom: 10px; padding: 10px; <%= borde %>"
+                        >
+                        <span><strong><%= activity[:type] %>:</strong></span>
+                        <%
+                            color = if activity[:type] == 'Reserva'
+                                        '#004080'
+                                    elsif activity[:amount] < 0
+                                        'red'
+                                    else
+                                        'green'
+                                    end
+                        %>
+                        <span style="color: <%= color %>;">
+                            <%= sprintf("$%.2f", activity[:amount]) %>
+                        </span>
 
-                                <p style="margin: 5px 0;"><%= activity[:details] %></p>
-                                <small style="color: #666;"><%= activity[:date].strftime("%d/%m/%Y %H:%M") %></small>
-                            </li>
-                        <% end %>
+                        <p style="margin: 5px 0;"><%= activity[:details] %></p>
+                        <small style="color: #666;"><%= activity[:date].strftime("%d/%m/%Y %H:%M") %></small>
+                        </li>
+                    <% end %>
                     </ul>
                     <% if @activities.size > 4 %>
-                        <a href="/actividades" id="toggle-activities-btn">Ver más</a>
+                    <a href="/actividades" id="toggle-activities-btn">Ver más</a>
                     <% end %>
                 <% else %>
                     <p>No hay actividad reciente.</p>
                 <% end %>
-            </div>
-        </div> </div>
+            </div> </div>
 
     <script>
         function mostrarCVU() {
