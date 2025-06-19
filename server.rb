@@ -461,7 +461,7 @@ end
     redirect '/login' unless session[:user_id]
   
     amount = params[:amount].to_f
-    name = params[:name].strip
+    name = params[:name].strip.capitalize
     user = User.find(session[:user_id])
     account = user.account
   
@@ -680,6 +680,30 @@ end
 
     erb :todas_las_reservas
   end
+
+  #Cambiar Alias
+  post '/actualizar_alias' do
+  redirect '/login' unless session[:user_id]
+
+  nuevo_alias = params[:nuevo_alias].strip.downcase
+  cuenta = User.find(session[:user_id]).account
+
+  if Account.where(account_alias: nuevo_alias).where.not(id: cuenta.id).exists?
+    session[:error] = "El alias ya está en uso por otra cuenta."
+  elsif nuevo_alias =~ /\A[a-z0-9\.]{3,30}\z/
+    cuenta.account_alias = nuevo_alias
+    if cuenta.save
+      session[:success] = "Alias actualizado correctamente."
+    else
+      session[:error] = "Error al actualizar el alias."
+    end
+  else
+    session[:error] = "Alias inválido. Solo letras, números y puntos. Mínimo 3 caracteres."
+  end
+
+  redirect '/principal'
+end
+
 
 
   get '/logout' do

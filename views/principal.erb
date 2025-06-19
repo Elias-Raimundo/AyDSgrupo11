@@ -133,6 +133,7 @@
             border-radius: 10px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             display: flex;
+            height: 220px;
             flex-direction: column; /* Apila el h3, la lista y el botón "Ver más" */
             /* La altura se ajustará automáticamente al contenido */
         }
@@ -198,6 +199,8 @@
             transition: background-color 0.3s ease, color 0.3s ease;
             display: block;
             text-decoration: none;
+            margin-left: 5px;
+            margin-top: 10px;
         }
 
         .mi-cvu-btn:hover {
@@ -319,8 +322,8 @@
                             <button onclick="toggleSaldo()" style="background: none; border: none; cursor: pointer;">
                                 <i id="icono-ojo" class="fa-solid fa-eye" style="font-size: 15px;"></i>
                             </button>
-                            <a href="/reserva" style="display: block; margin-left: auto; width: fit-content; margin-right: 15px;">
-                                <img src="/reservas.png" alt="reserva" style="width: 50px; height: 50px; cursor: pointer;" />
+                            <a href="/reserva" style="display: block; margin-left: auto; width: fit-content; margin-right: 25px; margin-top: 5px;">
+                                <img src="/chanchitto.png" alt="reserva" style="width: 75px; height: 60px; cursor: pointer;" />
                             </a>
                         </div>
                         <button onclick="mostrarCVU()" class="mi-cvu-btn">Mi CVU</button>
@@ -329,7 +332,18 @@
                             style="display: none; margin-top: 10px; background: white; padding: 10px; border-radius: 8px; color: black; box-shadow: 0 2px 6px rgba(0,0,0,0.2);"
                         >
                             <p><strong>CVU:</strong> <%= @cuenta&.cvu || 'No disponible' %></p>
-                            <p><strong>Alias:</strong> <%= @cuenta&.account_alias || 'No disponible' %></p>
+                            <div id="alias-display">
+                                <strong>Alias:</strong> <span id="alias-text"><%= @cuenta&.account_alias %></span>
+                                <button type="button" onclick="mostrarFormularioAlias()" style="margin-left: 10px;">Cambiar Alias</button>
+                            </div>
+
+                            <form id="alias-form" action="/actualizar_alias" method="POST" style="display: none; margin-top: 10px;">
+                                <strong>Alias:</strong>
+                                <input type="text" name="nuevo_alias" value="<%= @cuenta&.account_alias %>" required
+                                    style="padding: 5px; border-radius: 5px; border: 1px solid #ccc;">
+                                <button type="submit" style="margin-left: 10px;">Guardar</button>
+                                <button type="button" onclick="cancelarEdicionAlias()" style="margin-left: 5px;">Cancelar</button>
+                            </form>
                         </div>
                     </div>
                     <div class="actions-grid">
@@ -357,8 +371,8 @@
                             <% end %>
                         </div>
                         <% else %>
-                        <p>No hay reservas disponibles.</p>
-                        <a href="/ahorros" class="btn-ver-todas-reservas">Crear mi primera reserva</a>
+                        <p style="display: flex; justify-content: center;">No hay reservas disponibles.</p>
+                        <a href="/ahorros" class="btn-ver-todas-reservas" style="display: flex; justify-content: center; gap: 10px; margin-top: 57px;">Crear mi primer reserva</a>
                     <% end %>
 
                 </div>
@@ -386,25 +400,28 @@
                         <span><strong><%= activity[:type] %>:</strong></span>
                         <%
                             color = if activity[:type] == 'Reserva'
-                                        '#004080'
+                                    '#004080'
                                     elsif activity[:amount] < 0
-                                        'red'
+                                    'red'
                                     else
-                                        'green'
+                                    'green'
+                                    end
+
+                            signo = case activity[:type]
+                                    when 'Ingreso', 'Transferencia Recibida' then '+'
+                                    when 'Retiro', 'Reserva', 'Transferencia Enviada' then '-'
+                                    else ''
                                     end
                         %>
                         <span style="color: <%= color %>;">
-                            <%= sprintf("$%.2f", activity[:amount]) %>
+                            <%= "#{signo}$#{sprintf('%.2f', activity[:amount].abs)}" %>
                         </span>
-
                         <p style="margin: 5px 0;"><%= activity[:details] %></p>
                         <small style="color: #666;"><%= activity[:date].strftime("%d/%m/%Y %H:%M") %></small>
                         </li>
                     <% end %>
                     </ul>
-                    <% if @activities.size > 4 %>
                     <a href="/actividades" id="toggle-activities-btn">Ver más</a>
-                    <% end %>
                 <% else %>
                     <p>No hay actividad reciente.</p>
                 <% end %>
@@ -454,7 +471,17 @@
 
         function confirmarLogout() {
         window.location.href = "/logout";
-}
+        }
+
+         function mostrarFormularioAlias() {
+            document.getElementById('alias-display').style.display = 'none';
+            document.getElementById('alias-form').style.display = 'block';
+        }
+
+        function cancelarEdicionAlias() {
+            document.getElementById('alias-form').style.display = 'none';
+            document.getElementById('alias-display').style.display = 'block';
+        }
 
     </script>
     <!-- Modal de confirmación -->
