@@ -490,10 +490,17 @@ end
         return erb :ahorros
       end
   
-      existing_ahorro.amount += amount
-      account.balance -= amount
-  
+      added_amount = amount
+      existing_ahorro.amount += added_amount
+      account.balance -= added_amount
+
       if existing_ahorro.save && account.save
+        SavingTransaction.create!(
+          account: account,
+          name: existing_ahorro.name,
+          amount: added_amount,
+          transaction_type: 'Ingreso a reserva'
+        )
         redirect '/principal'
       else
         @error = existing_ahorro.errors.full_messages.join(", ")
@@ -510,6 +517,12 @@ end
       
   
       if ahorro.save && account.save
+        SavingTransaction.create!(
+          account: account,
+          name: name,
+          amount: amount,
+          transaction_type: 'Ingreso a reserva'
+        )
         redirect '/principal'
       else
         @error = ahorro.errors.full_messages.join(", ")
@@ -554,17 +567,26 @@ end
     end
 
     ActiveRecord::Base.transaction do
-  reserva.amount -= monto
-
-  if reserva.amount <= 0.00001
-    reserva.destroy!  # la eliminás directamente sin guardar con amount = 0
-  else
-    reserva.save!
+      withdrawn_amount = monto
+      reserva.amount -= withdrawn_amount
+    
+      if reserva.amount <= 0.00001
+        reserva.destroy! # La eliminas si queda en 0
+      else
+        reserva.save!
+      end
+    
+      cuenta.balance += withdrawn_amount
+      cuenta.save!
+    
+      SavingTransaction.create!(
+        account: cuenta,
+        name: reserva.name,
+        amount: -withdrawn_amount,
+        transaction_type: 'Retiro de reserva'
+      )
+    
   end
-
-  cuenta.balance += monto
-  cuenta.save!
-end
 
 
     redirect '/principal'
@@ -617,7 +639,7 @@ end
     
         incomes = Income.where(user_id: user.id).select(:amount, :source, :created_at)
         withdrawals = Withdrawal.where(user_id: user.id).select(:amount, :reason, :created_at)
-        savings = Saving.where(account_id: account.id).select(:amount, :name, :created_at)
+        saving_transactions = SavingTransaction.where(account_id: account.id)
 
     
         # Precargamos las asociaciones para evitar N+1
@@ -632,8 +654,13 @@ end
                       withdrawals.map do |withdrawal|
                         { type: 'Retiro', amount: -withdrawal.amount, details: withdrawal.reason, date: withdrawal.created_at }
                       end +
-                      savings.map do |saving|
-                        { type: 'Reserva', amount: -saving.amount, details: saving.name, date: saving.created_at }
+                      saving_transactions.map do |saving_transaction|
+                        {
+                          type: saving_transaction.transaction_type,
+                          amount: saving_transaction.amount,
+                          details: "Reserva '#{saving_transaction.name}'",
+                          date: saving_transaction.created_at
+                        }
                       end +
                       transactions_as_source.map do |transaction|
                         target_person = transaction.target_account.user.person

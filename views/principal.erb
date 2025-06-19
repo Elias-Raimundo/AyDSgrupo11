@@ -399,8 +399,8 @@
                         >
                         <span><strong><%= activity[:type] %>:</strong></span>
                         <%
-                            color = if activity[:type] == 'Reserva'
-                                    '#004080'
+                            color = if activity[:type]  == 'Ingreso a reserva' || activity[:type] == 'Retiro de reserva'
+                                    '#001d4a'
                                     elsif activity[:amount] < 0
                                     'red'
                                     else
@@ -408,8 +408,8 @@
                                     end
 
                             signo = case activity[:type]
-                                    when 'Ingreso', 'Transferencia Recibida' then '+'
-                                    when 'Retiro', 'Reserva', 'Transferencia Enviada' then '-'
+                                    when 'Ingreso', 'Transferencia Recibida', 'Ingreso a reserva' then '+'
+                                    when 'Retiro', 'Retiro de reserva', 'Transferencia Enviada' then '-'
                                     else ''
                                     end
                         %>
