@@ -342,25 +342,25 @@
                     <h3 style="color: #004080; text-align: center; position: relative; top: -13px;"> Últimas Reservas </h3>
                     <% if @reservas.any? %>
                         <ul class="reservas-list">
-                            <% # Limita el número de reservas mostradas, por ejemplo, a las primeras 4 %>
-                            <% # Ajusta el número (4) según cuántas quieras que "entren" visualmente %>
                             <% @reservas.first(3).each do |reserva| %>
-                                <li>
-                                    <strong>Motivo:</strong> <%= reserva.name %>
-                                    <span>Monto: $<%= sprintf('%.2f', reserva.amount) %></span>
-                                </li>
+                            <li>
+                                <strong>Motivo:</strong> <%= reserva.name %>
+                                <span>Monto: $<%= sprintf('%.2f', reserva.amount) %></span>
+                            </li>
                             <% end %>
                         </ul>
-                        <% if @reservas.size > 3 %>
-                            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
-                                <a href="/ahorros" class="btn-ver-todas-reservas">Crear nueva reserva</a>
-                                <a href="/todas_las_reservas" class="btn-ver-todas-reservas">Ver todas las reservas</a>
-                            </div>
-                        <% end %>
-                    <% else %>
+
+                        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px;">
+                            <a href="/ahorros" class="btn-ver-todas-reservas">Crear nueva reserva</a>
+                            <% if @reservas.size > 3 %>
+                            <a href="/todas_las_reservas" class="btn-ver-todas-reservas">Ver todas las reservas</a>
+                            <% end %>
+                        </div>
+                        <% else %>
                         <p>No hay reservas disponibles.</p>
                         <a href="/ahorros" class="btn-ver-todas-reservas">Crear mi primera reserva</a>
                     <% end %>
+
                 </div>
             </div> <div class="activity-card" style="margin-top: 0; padding: 10px 15px 15px 15px;">
                 <h3 style="

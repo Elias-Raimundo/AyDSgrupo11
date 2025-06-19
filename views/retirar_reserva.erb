@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Retirar de Reservas</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Helvetica', sans-serif;
+      background: linear-gradient(to bottom, #2c587f, #c8e0f7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #ffffff20;
+      padding: 40px;
+      border-radius: 20px;
+      width: 400px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      text-align: center;
+      color: white;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #002c6c;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    select, input {
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 20px;
+      border: none;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 12px;
+      background-color: #00264d;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #004080;
+    }
+
+    .error {
+      color: #ffcccc;
+      margin-bottom: 15px;
+    }
+
+    .back-link {
+      margin-top: 20px;
+      color: black;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Retirar de una Reserva</h2>
+
+    <% if @error %>
+      <div class="error"><%= @error %></div>
+    <% end %>
+
+    <form action="/retirar_reserva" method="post">
+      <label for="reserva_id" style="color: black; text-align: left;">Elegí una reserva:</label>
+      <select name="reserva_id" id="reserva_id" required>
+        <% @reservas.each do |reserva| %>
+          <option value="<%= reserva.id %>">
+            <%= reserva.name %> - $<%= sprintf('%.2f', reserva.amount) %>
+          </option>
+        <% end %>
+      </select>
+
+      <label for="amount" style="color: black; text-align: left;">Monto a retirar:</label>
+      <input type="number" name="amount" id="amount" min="0.01" step="0.01" required>
+
+      <button type="submit">Retirar</button>
+    </form>
+
+    <a href="/principal" class="back-link">← Volver al inicio</a>
+  </div>
+</body>
+</html>

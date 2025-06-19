@@ -498,6 +498,63 @@ end
       end
     end
   end
+  # ---------- RETIRAR DINERO DE UNA RESERVA ----------
+  get '/retirar_reserva' do
+    redirect '/login' unless session[:user_id]
+
+    @usuario = User.find(session[:user_id])
+    @cuenta = @usuario.account
+    @reservas = Saving.where(account: @cuenta)
+
+    erb :retirar_reserva
+  end
+
+  post '/retirar_reserva' do
+    redirect '/login' unless session[:user_id]
+
+    user = User.find(session[:user_id])
+    cuenta = user.account
+
+    reserva = Saving.find_by(id: params[:reserva_id], account: cuenta)
+    monto = params[:amount].to_f
+
+    if reserva.nil?
+      @error = "Reserva no encontrada."
+      return erb :retirar_reserva
+    end
+
+    if monto <= 0
+      @error = "El monto debe ser mayor a 0."
+      return erb :retirar_reserva
+    end
+
+    if monto > reserva.amount
+      @error = "No tenés suficiente dinero en esa reserva."
+      return erb :retirar_reserva
+    end
+
+    ActiveRecord::Base.transaction do
+  reserva.amount -= monto
+
+  if reserva.amount <= 0.00001
+    reserva.destroy!  # la eliminás directamente sin guardar con amount = 0
+  else
+    reserva.save!
+  end
+
+  cuenta.balance += monto
+  cuenta.save!
+end
+
+
+    redirect '/principal'
+  rescue => e
+    @error = "Error al retirar de la reserva: #{e.message}"
+    @usuario = user
+    @cuenta = cuenta
+    @reservas = Saving.where(account: cuenta)
+    erb :retirar_reserva
+  end
 
 
     get '/principal' do
