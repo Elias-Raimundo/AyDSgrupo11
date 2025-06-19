@@ -479,9 +479,16 @@ end
     existing_ahorro = Saving.find_by(name: name, account: account)
   
     if existing_ahorro
-      # Si existe, actualiza su monto sumándole el nuevo valor
+      # Si existe, sumamos el nuevo monto al ahorro existente
+      if account.balance < amount
+        @error = "Saldo insuficiente para agregar a la reserva."
+        return erb :ahorros
+      end
+  
       existing_ahorro.amount += amount
-      if existing_ahorro.save
+      account.balance -= amount
+  
+      if existing_ahorro.save && account.save
         redirect '/principal'
       else
         @error = existing_ahorro.errors.full_messages.join(", ")
@@ -489,8 +496,15 @@ end
       end
     else
       # Si no existe un ahorro con ese nombre, crea uno nuevo
+      if account.balance < amount
+        @error = "Saldo insuficiente."
+        return erb :ahorros
+      end
+  
       ahorro = Saving.new(amount: amount, name: name, account: account)
-      if ahorro.save
+      
+  
+      if ahorro.save && account.save
         redirect '/principal'
       else
         @error = ahorro.errors.full_messages.join(", ")
@@ -498,6 +512,7 @@ end
       end
     end
   end
+  
   # ---------- RETIRAR DINERO DE UNA RESERVA ----------
   get '/retirar_reserva' do
     redirect '/login' unless session[:user_id]
