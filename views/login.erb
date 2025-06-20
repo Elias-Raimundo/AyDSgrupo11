@@ -52,10 +52,33 @@
     }
 
     input[type="email"],
-    input[type="password"] {
+    input[type="password"],
+    input[type="text"] {
       background-color: #d4e4f7;
       color: #333;
+      border: none;
+      border-radius: 20px;
+      padding: 15px;
+      font-size: 16px;
+      width: 100%;
+      box-sizing: border-box;
     }
+
+    .show-password {
+      font-size: 14px;
+      color: #001d4a;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: -5px;
+      margin-bottom: 10px;
+    }
+
+    .show-password input[type="checkbox"] {
+      width: auto;
+    }
+    
+
 
     button {
       background-color: #001d4a;
@@ -95,10 +118,23 @@
     <% end %>
     <form action="/login" method="post">
       <input type="email" name="email" placeholder="Email" required>
-      <input type="password" name="password" placeholder="Contraseña" required>
+      <input type="password" id = "password" name="password" placeholder="Contraseña" required>
+
+      <!-- Mostrar contraseña -->
+      <label class="show-password">
+        <input type="checkbox" onclick="mostrarContrasena()"> Mostrar contraseña
+      </label>
+
+
       <a class="forgot" href="/olvideMiContrasena">¿Olvidaste tu contraseña?</a>
       <button type="submit">INGRESAR</button>
     </form>
   </div>
+  <script>
+    function mostrarContrasena() {
+      const input = document.getElementById("password");
+      input.type = input.type === "password" ? "text" : "password";
+    }
+  </script>
 </body>
 </html>

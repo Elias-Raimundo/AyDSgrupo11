@@ -40,10 +40,11 @@
     }
 
     input[type="email"],
-    input[type="password"] {
+    input[type="password"],
+    input[type="text"] {
       width: 100%;
       padding: 15px;
-      margin-bottom: 25px; /* espacio entre inputs */
+      margin-bottom: 25px;
       border: none;
       border-radius: 20px;
       background-color: #d4e4f7;
@@ -51,6 +52,23 @@
       font-size: 16px;
       box-sizing: border-box;
     }
+
+
+    .show-password-container {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 20px; /* da espacio entre el checkbox y el botón */
+        padding-left: 10px;  /* un poco de padding para que quede alineado */
+      }
+
+      .show-password-container input[type="checkbox"] {
+        margin-right: 8px;
+        transform: scale(1.2); /* un poco más visible */
+      }
+
 
     button {
       width: 100%;
@@ -97,8 +115,13 @@
     <h2>DATOS DE USUARIO</h2>
     <form action="/" method="post">
       <input type="email" name="email" placeholder="Email" required>
-      <input type="password" name="password" placeholder="Contraseña" required>
-      <input type="password" name="confirm_password" placeholder="Confirmar contraseña" required>
+      <input type="password" id = "password" name="password" placeholder="Contraseña" required>
+      <input type="password" id = "confirm_password" name="confirm_password" placeholder="Confirmar contraseña" required>
+      
+      <label class="show-password-container">
+      <input type="checkbox" onclick="mostrarContrasenas()"> Mostrar contraseña
+      </label>
+
       <button type="submit">REGISTRARME</button>
     </form>
   </div>
@@ -113,6 +136,16 @@
         alert('Las contraseñas no coinciden');
       }
     });
+
+    function mostrarContrasenas() {
+      const pass = document.getElementById("password");
+      const confirm = document.getElementById("confirm_password");
+
+      const mostrar = pass.type === "password";
+      pass.type = mostrar ? "text" : "password";
+      confirm.type = mostrar ? "text" : "password";
+    }
+
   </script>
 </body>
 </html>
