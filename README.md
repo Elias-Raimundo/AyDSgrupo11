@@ -1,35 +1,36 @@
-# AyDSgrupo11
-Virtual Wallet VAULT
-Grupo 11 - Calcagno Mateo, Bessone Nicolas, Orlando Valentina Pilar, Raimundo Elias Santiago
+# VAULT VIRTUAL WALLET
 
-#Descripción
-Esta aplicación permite a los usuarios gestionar su dinero de forma digital. Se pueden realizar operaciones como ingresar, transferir y sacar dinero, consultar movimientos/actividad y administrar cuentas de forma segura y sencilla. Simula un sistema basico de cuentas, usuarios y transacciones, usando ActiveRecord, SQLite y Docker.
+Vault es una billetera virtual que permite gestionar tu dinero de manera digital de forma segura y sencilla. Con Vault, los usuarios pueden realizar operaciones como ingresar, transferir y retirar dinero, hacer reservas, y consultar la actividad de la cuenta. La aplicación está construida con Ruby utilizando ActiveRecord, Sinatra y Docker.
 
-#Tecnologias
-Ruby(con ActiveRecord)
-Docker
-SQLite3
-Rake + Bundler
+Características
 
-#Instalación (con Docker)
-1. Clonar el repositorio:
-git clone -b master https://github.com/Elias-Raimundo/AyDSgrupo11.git
-cd AyDSgrupo11
+Ingreso de dinero: Permite añadir fondos a la cuenta.
+Transferencias: Transfiere dinero entre cuentas de manera segura.
+Retiros: Retira dinero de tu cuenta.
+Reservas: Crea y administra reservas de dinero.
+Historial de actividad: Consulta los movimientos y actividades realizadas en la cuenta.
 
-2. Construir la imagen de Docker:
-docker build -t aydsgrupo11 .
+Tecnologías utilizadas
 
-3. Crear y migrar la base de datos:
-docker run -it --rm -v "$PWD":/app -w /app vault_app bash
-bundle exec rake db:create
-bundle exec rake db:migrate
-exit
+Ruby: Lenguaje de programación principal.
+ActiveRecord: ORM para la gestión de la base de datos.
+Sinatra: Framework minimalista para el desarrollo web.
+SQLite3: Base de datos relacional.
+Rake + Bundler: Herramientas de automatización y gestión de dependencias.
+Docker: Contenedores para un entorno de desarrollo y despliegue consistente.
 
-4. Ejecutar la app:
-docker run -p 8000:8000 aydsgrupo11
+Uso
 
-Visitar: http://localhost:8000
+Una vez la aplicación esté en ejecución, puedes:
+Ingresar dinero: 💸 Accede a la opción "Ingresar" en el menú principal.
+Transferir dinero: 🔄 Completa el formulario de transferencia especificando la cuenta de destino y el monto.
+Retirar dinero: 💵 Selecciona la cantidad a retirar desde tu cuenta.
+Reservas: 🐖 Puedes crear nuevas reservas o agregar dinero a una reserva existente tocando el botón de "Crear Nueva Reserva". Si quieres ingresar dinero a una reserva existente, simplemente utiliza el mismo motivo que la reserva ya existente. Además, al presionar el ícono del chanchito 🐷 que está al lado del saldo de la cuenta, podrás ver el total reservado y también retirar dinero de las reservas.
+Consultar actividad: 📜 Revisa el historial de todas las transacciones y operaciones realizadas.
 
+Contribución
 
-
-
+Calcagno Mateo
+Bessone Nicolás
+Orlando Valentina Pilar
+Raimundo Elías Santiago
