@@ -16,7 +16,7 @@ end
 namespace :db do
   desc 'Crear la base de datos (para SQLite solo crea el archivo)'
   task :create, [:env] do |t, args|
-    env = args[:env] || 'development'
+    env = args[:env] || ENV['RACK_ENV'] || ENV['RAILS_ENV'] || 'development'
     config = db_config(env)
     if config['adapter'] == 'sqlite3'
       db_path = config['database']
@@ -34,12 +34,13 @@ namespace :db do
   end
 
   desc 'Ejecutar migraciones pendientes'
-  task :migrate, [:env] do |t, args|
-    env = args[:env] || 'development'
-    establish_connection(env)
-    migrations_path = File.expand_path('db/migrate', __dir__)
-    ActiveRecord::MigrationContext.new(migrations_path).migrate
-  end
+task :migrate, [:env] do |t, args|
+  env = args[:env] || ENV['RACK_ENV'] || ENV['RAILS_ENV'] || 'development'
+  establish_connection(env)
+  migrations_path = File.expand_path('db/migrate', __dir__)
+  ActiveRecord::MigrationContext.new(migrations_path).migrate
+end
+
 
   desc 'Generar archivo schema.rb'
   task :schema_dump, [:env] do |t, args|
@@ -72,4 +73,15 @@ namespace :db do
       puts "Drop DB para #{config['adapter']} no implementado."
     end
   end
+
+  # Agregar al final del Rakefile
+require 'rspec/core/rake_task'
+
+desc 'Ejecutar los tests'
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.pattern = 'spec/**/*_spec.rb'
+end
+
+task default: :spec
+
 end 

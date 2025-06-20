@@ -9,7 +9,7 @@ development:
 
 test:
   <<: *default
-  database: dp/wallet_test.sqlite3
+  database: db/wallet_test.sqlite3
 
 production:
   <<: *default
